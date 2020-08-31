@@ -2,6 +2,7 @@
 .gradle
 .idea
 build
+run
 
 # Compiled class file
 *.class
