@@ -13,6 +13,6 @@ public class NativeTechItemGroup extends ItemGroup {
 
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(NativeItems.STONE_DIRT_ITEM.get());
+        return new ItemStack(NativeItems.HARDENED_STONE_ITEM.get());
     }
 }

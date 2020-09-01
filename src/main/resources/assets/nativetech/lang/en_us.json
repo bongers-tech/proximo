@@ -1,5 +1,7 @@
 {
   "itemGroup.nativetech": "Native Tech",
 
-  "block.nativetech.stone_dirt": "Stone Dirt"
+  "block.nativetech.hardened_stone": "Hardened Stone",
+
+  "item.nativetech.hardened_stone_sword": "Hardened Stone Sword"
 }

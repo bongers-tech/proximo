@@ -1,8 +1,6 @@
 package tech.bongers.nativetech.common.item;
 
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.item.*;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -20,9 +18,15 @@ public final class NativeItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
     // Item Blocks
-    public static final RegistryObject<Item> STONE_DIRT_ITEM = ITEMS.register(
-            "stone_dirt",
-            () -> new BlockItem(NativeBlocks.STONE_DIRT.get(), NativeItems.itemProperties())
+    public static final RegistryObject<Item> HARDENED_STONE_ITEM = ITEMS.register(
+            "hardened_stone",
+            () -> new BlockItem(NativeBlocks.HARDENED_STONE.get(), NativeItems.itemProperties())
+    );
+
+    // Items
+    public static final RegistryObject<Item> HARDENED_STONE_SWORD = ITEMS.register(
+            "hardened_stone_sword",
+            () -> new SwordItem(ItemTier.IRON, 4, -2.4F, itemProperties())
     );
 
     public static Item.Properties itemProperties() {

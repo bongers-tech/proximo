@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "nativetech:blocks/stone_dirt"
+    "all": "nativetech:blocks/hardened_stone"
   }
 }

@@ -14,5 +14,5 @@ public final class NativeBlocks {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 
-    public static final RegistryObject<Block> STONE_DIRT = BLOCKS.register("stone_dirt", StoneDirtBlock::new);
+    public static final RegistryObject<Block> HARDENED_STONE = BLOCKS.register("hardened_stone", HardenedStoneBlock::new);
 }

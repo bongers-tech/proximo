@@ -6,11 +6,11 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 
-public class StoneDirtBlock extends Block {
+public class HardenedStoneBlock extends Block {
 
-    public StoneDirtBlock() {
+    public HardenedStoneBlock() {
         super(AbstractBlock.Properties
-                .create(Material.ROCK, MaterialColor.DIRT)
+                .create(Material.ROCK, MaterialColor.IRON)
                 .hardnessAndResistance(1.5F, 6.0F)
                 .sound(SoundType.STONE)
         );

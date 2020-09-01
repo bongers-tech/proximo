@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "nativetech:items/hardened_stone_sword"
+  }
+}

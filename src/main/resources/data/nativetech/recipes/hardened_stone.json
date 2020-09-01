@@ -2,24 +2,24 @@
   "type": "minecraft:crafting_shaped",
   "pattern":
   [
-    "xxx",
-    "xdx",
-    "xxx"
+    "sss",
+    "sis",
+    "sss"
   ],
   "key":
   {
-    "x":
+    "s":
     {
       "item": "minecraft:stone"
     },
-    "d":
+    "i":
     {
-      "item": "minecraft:dirt"
+      "tag": "forge:ingots/iron"
     }
   },
   "result":
   {
-    "item": "nativetech:stone_dirt",
+    "item": "nativetech:hardened_stone",
     "count": 8
   }
 }

@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "nativetech:hardened_stone_sword"
+  },
+  "pattern": [
+    "m",
+    "m",
+    "s"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "m": {
+      "item": "nativetech:hardened_stone"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    }
+  }
+}
