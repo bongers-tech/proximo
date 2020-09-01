@@ -20,7 +20,12 @@ public final class NativeItems {
     // Item Blocks
     public static final RegistryObject<Item> HARDENED_STONE_ITEM = ITEMS.register(
             "hardened_stone",
-            () -> new BlockItem(NativeBlocks.HARDENED_STONE.get(), NativeItems.itemProperties())
+            () -> new BlockItem(NativeBlocks.HARDENED_STONE.get(), itemProperties())
+    );
+
+    public static final RegistryObject<Item> REDSTONE_GENERATOR_ITEM = ITEMS.register(
+            "redstone_generator",
+            () -> new BlockItem(NativeBlocks.REDSTONE_GENERATOR.get(), itemProperties())
     );
 
     // Items

@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.item.NativeItems;
+import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
 import tech.bongers.nativetech.common.util.Reference;
 
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class NativeTech {
 
         NativeBlocks.BLOCKS.register(eventBus);
         NativeItems.ITEMS.register(eventBus);
+        NativeTileEntity.TILE_ENTITIES.register(eventBus);
 
         eventBus.addListener(this::setup);
         eventBus.addListener(this::clientSetup);
