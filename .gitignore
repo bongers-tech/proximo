@@ -3,6 +3,7 @@
 .idea
 build
 run
+/src/generated/
 
 # Compiled class file
 *.class
