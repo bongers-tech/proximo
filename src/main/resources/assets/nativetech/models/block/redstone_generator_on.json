@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "top": "nativetech:blocks/redstone_generator_top",
+    "top": "nativetech:blocks/redstone_generator_top_on",
     "front": "nativetech:blocks/redstone_generator_front_on",
     "side": "nativetech:blocks/redstone_generator_side"
   }

@@ -51,13 +51,16 @@ public class RedstoneGeneratorBlock extends AbstractFurnaceBlock {
             }
 
             final Direction direction = stateIn.get(FACING);
-            final Direction.Axis directionAxis = direction.getAxis();
+            final Direction.AxisDirection axisDirection = direction.getAxisDirection();
+            final Direction.Axis axis = direction.getAxis();
 
-            final double xOffset = directionAxis == Direction.Axis.X ? direction.getXOffset() * 0.5D : direction.getZOffset() * 0.5D;
+            final double xOffset = axis == Direction.Axis.X ? direction.getXOffset() * 0.5D : direction.getZOffset() * 0.5D;
+            final double zOffset = axis == Direction.Axis.Z ? direction.getZOffset() * 0.5D : direction.getXOffset() * 0.5D;
             final double yOffset = rand.nextDouble() * 9.0D / 16.0D;
-            final double zOffset = directionAxis == Direction.Axis.Z ? direction.getZOffset() * 0.5D : direction.getXOffset() * 0.5D;
 
-            worldIn.addParticle(ParticleTypes.LARGE_SMOKE, xPos + xOffset, yPos + yOffset, zPos + zOffset, 0.0D, 0.0D, 0.0D);
+            final double xDest = axisDirection == Direction.AxisDirection.POSITIVE ? xPos + xOffset : xPos - xOffset;
+            final double zDest = axisDirection == Direction.AxisDirection.POSITIVE ? zPos + zOffset : zPos - zOffset;
+            worldIn.addParticle(ParticleTypes.LARGE_SMOKE, xDest, yPos + yOffset, zDest, 0.0D, 0.0D, 0.0D);
         }
     }
 }
