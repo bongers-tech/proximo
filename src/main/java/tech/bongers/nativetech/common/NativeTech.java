@@ -63,6 +63,6 @@ public class NativeTech {
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
-        LOGGER.info("HELLO from server starting");
+        LOGGER.info("Server starting");
     }
 }
