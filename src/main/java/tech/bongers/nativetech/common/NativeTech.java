@@ -49,10 +49,7 @@ public class NativeTech {
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
-        InterModComms.sendTo(Reference.MOD_ID, "helloworld", () -> {
-            LOGGER.info("Hello world from the MDK IMC");
-            return "Hello world";
-        });
+        InterModComms.sendTo(Reference.MOD_ID, "helloworld", () -> "Hello world");
     }
 
     private void processIMC(final InterModProcessEvent event) {
