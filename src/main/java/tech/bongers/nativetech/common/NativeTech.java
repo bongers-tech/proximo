@@ -17,6 +17,7 @@
  */
 package tech.bongers.nativetech.common;
 
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,7 +31,9 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tech.bongers.nativetech.client.screen.RedstoneGeneratorScreen;
 import tech.bongers.nativetech.common.block.NativeBlocks;
+import tech.bongers.nativetech.common.container.NativeContainer;
 import tech.bongers.nativetech.common.item.NativeItems;
 import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
 import tech.bongers.nativetech.common.util.Reference;
@@ -48,6 +51,7 @@ public class NativeTech {
         NativeBlocks.BLOCKS.register(eventBus);
         NativeItems.ITEMS.register(eventBus);
         NativeTileEntity.TILE_ENTITIES.register(eventBus);
+        NativeContainer.CONTAINERS.register(eventBus);
 
         eventBus.addListener(this::setup);
         eventBus.addListener(this::clientSetup);
@@ -62,7 +66,7 @@ public class NativeTech {
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
+        ScreenManager.registerFactory(NativeContainer.REDSTONE_GENERATOR_CONTAINER.get(), RedstoneGeneratorScreen::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
