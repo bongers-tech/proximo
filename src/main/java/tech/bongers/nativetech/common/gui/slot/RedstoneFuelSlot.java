@@ -20,7 +20,6 @@ package tech.bongers.nativetech.common.gui.slot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.FurnaceFuelSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 
 public class RedstoneFuelSlot extends FurnaceFuelSlot {
 
@@ -30,6 +29,6 @@ public class RedstoneFuelSlot extends FurnaceFuelSlot {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return stack.getItem() == Items.REDSTONE;
+        return true; //stack.getItem() == Items.REDSTONE;
     }
 }

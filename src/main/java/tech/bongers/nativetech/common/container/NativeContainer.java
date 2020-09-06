@@ -32,6 +32,6 @@ public final class NativeContainer {
 
     public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
 
-    public static final RegistryObject<ContainerType<RedstoneGeneratorContainer>> REDSTONE_GENERATOR_CONTAINER = CONTAINERS.register("redstone_generator_container", () -> IForgeContainerType.create(RedstoneGeneratorContainer::create));
+    public static final RegistryObject<ContainerType<RedstoneGeneratorContainer>> REDSTONE_GENERATOR_CONTAINER = CONTAINERS.register("redstone_generator_container", () -> IForgeContainerType.create(RedstoneGeneratorContainer::new));
 
 }

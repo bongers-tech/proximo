@@ -29,11 +29,9 @@ import tech.bongers.nativetech.common.util.Reference;
 public class RedstoneGeneratorScreen extends ContainerScreen<RedstoneGeneratorContainer> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/redstone_generator.png");
-    private final RedstoneGeneratorContainer container;
 
     public RedstoneGeneratorScreen(final RedstoneGeneratorContainer container, final PlayerInventory inv, final ITextComponent titleIn) {
         super(container, inv, titleIn);
-        this.container = container;
     }
 
     @Override
@@ -47,16 +45,14 @@ public class RedstoneGeneratorScreen extends ContainerScreen<RedstoneGeneratorCo
     public void drawGuiContainerBackgroundLayer(final MatrixStack stack, final float partialTicks, final int mouseX, final int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         getMinecraft().getTextureManager().bindTexture(TEXTURE);
-        this.blit(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
 
         //Fire
-        if (this.container.isBurning()) {
-            int remaining = this.container.getBurnLeftScaled();
-            this.blit(stack, guiLeft + 56, guiTop + 36 + 13 - remaining, 176, 13 - remaining, 14, remaining + 1);
-        }
+         int remaining = this.container.getBurnLeftScaled();
+         blit(stack, guiLeft + 56, guiTop + 36 + 13 - remaining, 176, 13 - remaining, 14, remaining + 1);
 
         //Progression arrow
-        int progression = this.container.getCookProgressionScaled();
-        this.blit(stack, guiLeft + 79, guiTop + 34, 176, 14, progression + 1, 16);
+        int progression = this.container.getSmeltProgressionScaled();
+        blit(stack, guiLeft + 79, guiTop + 34, 176, 14, progression + 1, 16);
     }
 }

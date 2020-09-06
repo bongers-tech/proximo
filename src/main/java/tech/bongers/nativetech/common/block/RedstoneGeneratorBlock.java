@@ -18,43 +18,98 @@
 package tech.bongers.nativetech.common.block;
 
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.AbstractFurnaceBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.stats.Stats;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
+import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
 import tech.bongers.nativetech.common.tileentity.RedstoneGeneratorTileEntity;
 
 import java.util.Random;
 
-public class RedstoneGeneratorBlock extends AbstractFurnaceBlock {
+public class RedstoneGeneratorBlock extends Block {
 
-    protected RedstoneGeneratorBlock() {
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final BooleanProperty LIT = BooleanProperty.create("lit");
+
+    public RedstoneGeneratorBlock() {
         super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
+        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
     }
 
     @Override
-    protected void interactWith(final World worldIn, final BlockPos pos, final PlayerEntity player) {
-        final TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (tileEntity instanceof RedstoneGeneratorTileEntity) {
-            player.openContainer((INamedContainerProvider) tileEntity);
-            player.addStat(Stats.INTERACT_WITH_BLAST_FURNACE);
+    public boolean hasTileEntity(final BlockState state) {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(final BlockState state, final IBlockReader world) {
+        return NativeTileEntity.REDSTONE_GENERATOR_TILE_ENTITY.get().create();
+    }
+
+    @Override
+    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(FACING, LIT);
+    }
+
+    @Override
+    public int getLightValue(final BlockState state, final IBlockReader world, final BlockPos pos) {
+        return state.get(LIT) ? 12 : 0;
+    }
+
+    @Override
+    public BlockState getStateForPlacement(final BlockItemUseContext context) {
+        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+    }
+
+    @Override
+    public void onEntityWalk(final World world, final BlockPos pos, final Entity entity) {
+        if (world.isBlockPowered(pos)
+                && !entity.isImmuneToFire()
+                && entity instanceof LivingEntity
+                && !EnchantmentHelper.hasFrostWalker((LivingEntity) entity)){
+            entity.attackEntityFrom(DamageSource.HOT_FLOOR, 1.0F);
         }
     }
 
     @Override
-    public TileEntity createNewTileEntity(final IBlockReader worldIn) {
-        return new RedstoneGeneratorTileEntity();
+    @SuppressWarnings("deprecation") //Overriding is fine
+    public ActionResultType onBlockActivated(
+            final BlockState state,
+            final World world,
+            final BlockPos pos,
+            final PlayerEntity playerEntity,
+            final Hand hand,
+            final BlockRayTraceResult result) {
+        if (!world.isRemote) {
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof RedstoneGeneratorTileEntity) {
+                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
+                return ActionResultType.SUCCESS;
+            }
+        }
+        return ActionResultType.SUCCESS;
     }
+
 
     @Override
     public void animateTick(final BlockState stateIn, final World worldIn, final BlockPos pos, final Random rand) {

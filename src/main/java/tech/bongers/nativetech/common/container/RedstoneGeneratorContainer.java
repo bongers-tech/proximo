@@ -20,34 +20,51 @@ package tech.bongers.nativetech.common.container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.FurnaceResultSlot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.IntArray;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import tech.bongers.nativetech.common.gui.slot.RedstoneFuelSlot;
-import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
+import net.minecraftforge.items.SlotItemHandler;
+import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.tileentity.RedstoneGeneratorTileEntity;
+import tech.bongers.nativetech.common.util.FunctionalIntReferenceHolder;
+
+import java.util.Objects;
 
 public class RedstoneGeneratorContainer extends Container {
 
+    private final IWorldPosCallable canInteractWithCallable;
     private final RedstoneGeneratorTileEntity tileEntity;
-    // private final IIntArray furnaceData;
+    private final FunctionalIntReferenceHolder currentBurnTime;
+    private final FunctionalIntReferenceHolder currentSmeltTime;
 
-    public static RedstoneGeneratorContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
-        return new RedstoneGeneratorContainer(id, inventory, NativeTileEntity.REDSTONE_GENERATOR_TILE_ENTITY.get().create(), new IntArray(4));
+    //Client
+    public RedstoneGeneratorContainer(final int id, final PlayerInventory playerInventory, final PacketBuffer data) {
+        this(id, playerInventory, getTileEntity(playerInventory, data));
     }
 
-    public RedstoneGeneratorContainer(int id, final PlayerInventory inventory, final TileEntity tileEntity, final IIntArray furnaceData) {
+    //Server
+    public RedstoneGeneratorContainer(int id, final PlayerInventory inventory, final TileEntity tileEntity) {
         super(NativeContainer.REDSTONE_GENERATOR_CONTAINER.get(), id);
-        this.tileEntity = (RedstoneGeneratorTileEntity) tileEntity;
+        Objects.requireNonNull(tileEntity.getWorld());
 
-        addSlots(inventory);
+        this.tileEntity = (RedstoneGeneratorTileEntity) tileEntity;
+        this.canInteractWithCallable = IWorldPosCallable.of(tileEntity.getWorld(), tileEntity.getPos());
+        this.currentBurnTime = new FunctionalIntReferenceHolder(this.tileEntity::getCurrentBurnTime, this.tileEntity::setCurrentBurnTime);
+        this.currentSmeltTime = new FunctionalIntReferenceHolder(this.tileEntity::getCurrentSmeltTime, this.tileEntity::setCurrentSmeltTime);
+        this.trackInt(this.currentBurnTime);
+        this.trackInt(this.currentSmeltTime);
+
+        addBlockSlots();
         bindInventory(inventory);
+    }
+
+    @Override
+    public boolean canInteractWith(final PlayerEntity playerEntity) {
+        return isWithinUsableDistance(canInteractWithCallable, playerEntity, NativeBlocks.REDSTONE_GENERATOR.get());
     }
 
     @Override
@@ -75,54 +92,51 @@ public class RedstoneGeneratorContainer extends Container {
         return stack;
     }
 
-    @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        // Determine what conditions should be added here
-        return true;
+    @OnlyIn(Dist.CLIENT)
+    public int getSmeltProgressionScaled() {
+        return currentSmeltTime.get() != 0
+                ? currentSmeltTime.get() * 24 / RedstoneGeneratorTileEntity.MAX_SMELT_TIME
+                : 0;
     }
 
-    private void addSlots(final PlayerInventory inventory) {
-        addSlot(new Slot(inventory, 36, 56, 17));
-        addSlot(new RedstoneFuelSlot(inventory, 37, 56, 53));
-        addSlot(new FurnaceResultSlot(inventory.player, inventory, 38, 116, 35));
+    @OnlyIn(Dist.CLIENT)
+    public int getBurnLeftScaled() {
+        return currentBurnTime.get() != 0
+                ? currentBurnTime.get() * 13 / RedstoneGeneratorTileEntity.MAX_BURN_TIME
+                : 0;
     }
 
     private void bindInventory(final PlayerInventory inventory) {
-        // Player inventory. Max index = 35 (36 slots)
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                final int index = j + i * 9 + 9;
-                final int xPosition = 8 + j * 18;
-                final int yPosition = 84 + i * 18;
+        final int startX = 8;
+        final int startY = 84;
+
+        final int totalRows = 3;
+        final int slotsInRow = 9;
+        final int slotSize = 18; //slot = 16, border = 2
+
+        // Player inventory. 36 slots
+        for (int row = 0; row < totalRows; row++) {
+            for (int column = 0; column < slotsInRow; column++) {
+                final int index = (row * slotsInRow) + column + slotsInRow;
+                final int xPosition = startX + column * slotSize;
+                final int yPosition = startY + row * slotSize;
                 addSlot(new Slot(inventory, index, xPosition, yPosition));
             }
         }
 
         //Player hotbar
-        for (int i = 0; i < 9; i++) {
-            final int xPosition = 8 + i * 18;
-            final int yPosition = 142;
-            addSlot(new Slot(inventory, i, xPosition, yPosition));
+        final int hotBarOffset = 4;
+        for (int column = 0; column < slotsInRow; column++) {
+            final int xPosition = startX + column * slotSize;
+            final int yPosition = startY + (slotSize * totalRows) + hotBarOffset;
+            addSlot(new Slot(inventory, column, xPosition, yPosition));
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public int getCookProgressionScaled() {
-        int i = tileEntity.getActualCookTime();
-        int j = tileEntity.getCookTime();
-        return j != 0 && i != 0 ? i * 24 / j : 0;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public int getBurnLeftScaled() {
-        int i = tileEntity.getActualCookTime();
-        return tileEntity.getBurnTime(null) / (i * 2);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public boolean isBurning() {
-        final int burnTime = tileEntity.getBurnTime(null);
-        return burnTime > 0;
+    private void addBlockSlots() {
+        addSlot(new SlotItemHandler(tileEntity.getInventory(), 0, 56, 17));
+        addSlot(new SlotItemHandler(tileEntity.getInventory(), 1, 56, 53));
+        addSlot(new SlotItemHandler(tileEntity.getInventory(), 2, 116, 35));
     }
 
     private boolean performMerge(final int slotIndex, final ItemStack stack) {
@@ -133,5 +147,15 @@ public class RedstoneGeneratorContainer extends Container {
             return mergeItemStack(stack, invBase, invFull, true);
         }
         return mergeItemStack(stack, 0, invBase, false);
+    }
+
+    private static RedstoneGeneratorTileEntity getTileEntity(final PlayerInventory playerInventory, final PacketBuffer data) {
+        Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
+        Objects.requireNonNull(data, "data cannot be null");
+        final TileEntity tileAtPosition = playerInventory.player.world.getTileEntity(data.readBlockPos());
+        if (tileAtPosition instanceof RedstoneGeneratorTileEntity) {
+            return (RedstoneGeneratorTileEntity) tileAtPosition;
+        }
+        throw new IllegalStateException("TileEntity is not correct " + tileAtPosition);
     }
 }
