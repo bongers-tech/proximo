@@ -25,6 +25,8 @@ import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.item.group.NativeTechItemGroup;
 import tech.bongers.nativetech.common.util.Reference;
 
+import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
+
 public final class NativeItems {
 
     private NativeItems() {
@@ -37,12 +39,12 @@ public final class NativeItems {
     // Item Blocks
     public static final RegistryObject<Item> HARDENED_STONE_ITEM = ITEMS.register(
             "hardened_stone",
-            () -> new BlockItem(NativeBlocks.HARDENED_STONE.get(), itemProperties())
+            () -> new BlockItem(NativeBlocks.HARDENED_STONE_BLOCK.get(), itemProperties())
     );
 
-    public static final RegistryObject<Item> REDSTONE_GENERATOR_ITEM = ITEMS.register(
-            "redstone_generator",
-            () -> new BlockItem(NativeBlocks.REDSTONE_GENERATOR.get(), itemProperties())
+    public static final RegistryObject<Item> REDSTONE_FURNACE_ITEM = ITEMS.register(
+            REDSTONE_FURNACE,
+            () -> new BlockItem(NativeBlocks.REDSTONE_FURNACE_BLOCK.get(), itemProperties())
     );
 
     // Items

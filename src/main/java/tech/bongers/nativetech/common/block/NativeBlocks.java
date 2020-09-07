@@ -23,6 +23,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import tech.bongers.nativetech.common.util.Reference;
 
+import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
+
 public final class NativeBlocks {
 
     private NativeBlocks() {
@@ -31,6 +33,6 @@ public final class NativeBlocks {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 
-    public static final RegistryObject<Block> HARDENED_STONE = BLOCKS.register("hardened_stone", HardenedStoneBlock::new);
-    public static final RegistryObject<Block> REDSTONE_GENERATOR = BLOCKS.register("redstone_generator", RedstoneGeneratorBlock::new);
+    public static final RegistryObject<Block> HARDENED_STONE_BLOCK = BLOCKS.register("hardened_stone", HardenedStoneBlock::new);
+    public static final RegistryObject<Block> REDSTONE_FURNACE_BLOCK = BLOCKS.register(REDSTONE_FURNACE, RedstoneFurnaceBlock::new);
 }

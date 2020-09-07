@@ -18,13 +18,13 @@
 package tech.bongers.nativetech.common.tileentity;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.BlastingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -35,17 +35,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
-import tech.bongers.nativetech.common.container.RedstoneGeneratorContainer;
-import tech.bongers.nativetech.common.handler.RedstoneGeneratorItemHandler;
+import tech.bongers.nativetech.common.container.RedstoneFurnaceContainer;
+import tech.bongers.nativetech.common.handler.RedstoneFurnaceItemHandler;
 import tech.bongers.nativetech.common.util.Reference;
 
 import javax.annotation.Nonnull;
@@ -54,85 +54,81 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RedstoneGeneratorTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
+
+public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     public static final int MAX_SMELT_TIME = 50;
     public static final int MAX_BURN_TIME = 100;
 
-    private final RedstoneGeneratorItemHandler inventory;
+    private final RedstoneFurnaceItemHandler inventory;
     private int currentSmeltTime;
     private int currentBurnTime;
 
-    public RedstoneGeneratorTileEntity() {
-        this(NativeTileEntity.REDSTONE_GENERATOR_TILE_ENTITY.get());
+    public RedstoneFurnaceTileEntity() {
+        this(NativeTileEntity.REDSTONE_FURNACE_TILE_ENTITY.get());
     }
 
-    private RedstoneGeneratorTileEntity(final TileEntityType<?> tileEntityTypeIn) {
+    private RedstoneFurnaceTileEntity(final TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.inventory = new RedstoneGeneratorItemHandler(3);
+        this.inventory = new RedstoneFurnaceItemHandler(3);
     }
 
     @Override
     public Container createMenu(final int id, final PlayerInventory playerInventory, final PlayerEntity playerEntity) {
-        return new RedstoneGeneratorContainer(id, playerInventory, this);
+        return new RedstoneFurnaceContainer(id, playerInventory, this);
     }
 
     @Override
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("container." + Reference.MOD_ID + ".redstone_generator");
+        return new TranslationTextComponent("container." + Reference.MOD_ID + "." + REDSTONE_FURNACE);
     }
 
     @Override
-    public void tick() { // Rewrite method. Should not be as complex as it is now
+    public void tick() {
+        boolean isBurningOnStart = isBurning();
         boolean dirty = false;
+        if (isBurning()) {
+            --currentBurnTime;
+        }
 
         if (world != null && !world.isRemote) {
-            if (world.isBlockPowered(getPos())) {
-                final BlastingRecipe recipe = getRecipe(inventory.getStackInSlot(0));
-                final ItemStack fuelStack = inventory.getStackInSlot(1);
+            final ItemStack itemstack = this.inventory.getStackInSlot(0);
+            final ItemStack fuelStack = this.inventory.getStackInSlot(1);
 
-                if (fuelStack.getItem() == Items.REDSTONE || (fuelStack.isEmpty() && currentBurnTime != 0)) {
-                    if (recipe != null && currentBurnTime == 0) {
-                        currentBurnTime = MAX_BURN_TIME;
-                        inventory.decreaseStackSize(1, 1);
-                    } else if (currentBurnTime == 0) {
-                        dirty = true;
-                        world.setBlockState(getPos(), getBlockState().with(BlockStateProperties.LIT, false));
-                    }
+            if (this.isBurning() || !itemstack.isEmpty() && !fuelStack.isEmpty()) {
 
-                    if (currentBurnTime != 0) {
-                        dirty = true;
-                        currentBurnTime--;
-                        world.setBlockState(getPos(), getBlockState().with(BlockStateProperties.LIT, true));
-                    }
-                }
-
-                if (recipe != null && getBlockState().get(BlockStateProperties.LIT)) {
+                final IRecipe<?> recipe = getRecipe(itemstack);
+                final BlockState blockDown = world.getBlockState(getPos().down());
+                if (!isBurning() && recipe != null && !fuelStack.isEmpty() && blockDown.isIn(Blocks.REDSTONE_BLOCK)) {
+                    currentBurnTime = MAX_BURN_TIME; //Should be based on pre-defined burn times
                     dirty = true;
-                    if (currentSmeltTime != MAX_SMELT_TIME) {
-                        currentSmeltTime++;
-                    } else {
-                        currentSmeltTime = 0;
-                        final ItemStack output = recipe.getRecipeOutput();
-                        output.setCount(2);
-                        inventory.insertItem(2, output.copy(), false);
-                        inventory.decreaseStackSize(0, 1);
-                    }
-                } else if (getBlockState().get(BlockStateProperties.LIT)) {
-                    dirty = true;
+                    fuelStack.shrink(1);
+                } else if (isBurning() && !blockDown.isIn(Blocks.REDSTONE_BLOCK)) {
                     currentSmeltTime = 0;
-                    world.setBlockState(getPos(), getBlockState().with(BlockStateProperties.LIT, false));
                 }
-            } else if (getBlockState().get(BlockStateProperties.LIT)) {
+
+                if (isBurning() && recipe != null) {
+                    ++currentSmeltTime;
+                    if (currentSmeltTime == MAX_SMELT_TIME) { //Should be bases on pre-defined smelt times
+                        currentSmeltTime = 0;
+                        smelt(recipe);
+                        dirty = true;
+                    }
+                }
+
+            } else if (currentSmeltTime > 0) {
+                this.currentSmeltTime = MathHelper.clamp(currentSmeltTime - 2, 0, MAX_SMELT_TIME);
+            }
+
+            if (isBurningOnStart != isBurning()) {
                 dirty = true;
-                currentSmeltTime = 0;
-                world.setBlockState(getPos(), getBlockState().with(BlockStateProperties.LIT, false));
+                world.setBlockState(getPos(), getBlockState().with(BlockStateProperties.LIT, isBurning()));
             }
         }
 
         if (dirty) {
             markDirty();
-            world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
         }
     }
 
@@ -155,8 +151,8 @@ public class RedstoneGeneratorTileEntity extends TileEntity implements ITickable
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> inventory));
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> inventory));
     }
 
     public IItemHandlerModifiable getInventory() {
@@ -177,6 +173,10 @@ public class RedstoneGeneratorTileEntity extends TileEntity implements ITickable
 
     public void setCurrentSmeltTime(final int currentSmeltTime) {
         this.currentSmeltTime = currentSmeltTime;
+    }
+
+    private boolean isBurning() {
+        return this.currentBurnTime > 0;
     }
 
     @Nullable
@@ -200,5 +200,14 @@ public class RedstoneGeneratorTileEntity extends TileEntity implements ITickable
                 .stream()
                 .filter(recipe -> recipe.getType() == IRecipeType.BLASTING)
                 .collect(Collectors.toSet());
+    }
+
+    private void smelt(@Nullable final IRecipe<?> recipe) {
+        if (recipe != null) {
+            final ItemStack outputStack = recipe.getRecipeOutput();
+            outputStack.setCount(2);
+            inventory.insertItem(2, outputStack.copy(), false);
+            inventory.decreaseStackSize(0, 1);
+        }
     }
 }

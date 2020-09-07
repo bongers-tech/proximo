@@ -24,6 +24,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.util.Reference;
 
+import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
+
 public final class NativeTileEntity {
 
     private NativeTileEntity() {
@@ -32,8 +34,8 @@ public final class NativeTileEntity {
 
     public static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
 
-    public static final RegistryObject<TileEntityType<RedstoneGeneratorTileEntity>> REDSTONE_GENERATOR_TILE_ENTITY = TILE_ENTITIES.register(
-            "redstone_generator",
-            () -> TileEntityType.Builder.create(RedstoneGeneratorTileEntity::new, NativeBlocks.REDSTONE_GENERATOR.get()).build(null)
+    public static final RegistryObject<TileEntityType<RedstoneFurnaceTileEntity>> REDSTONE_FURNACE_TILE_ENTITY = TILE_ENTITIES.register(
+            REDSTONE_FURNACE,
+            () -> TileEntityType.Builder.create(RedstoneFurnaceTileEntity::new, NativeBlocks.REDSTONE_FURNACE_BLOCK.get()).build(null)
     );
 }

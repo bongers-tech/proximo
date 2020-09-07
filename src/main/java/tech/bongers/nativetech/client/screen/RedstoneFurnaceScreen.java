@@ -23,14 +23,17 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import tech.bongers.nativetech.common.container.RedstoneGeneratorContainer;
+import tech.bongers.nativetech.common.container.RedstoneFurnaceContainer;
 import tech.bongers.nativetech.common.util.Reference;
 
-public class RedstoneGeneratorScreen extends ContainerScreen<RedstoneGeneratorContainer> {
+import static tech.bongers.nativetech.common.util.NativeProperties.PATH_GUI;
+import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/redstone_generator.png");
+public class RedstoneFurnaceScreen extends ContainerScreen<RedstoneFurnaceContainer> {
 
-    public RedstoneGeneratorScreen(final RedstoneGeneratorContainer container, final PlayerInventory inv, final ITextComponent titleIn) {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, PATH_GUI + REDSTONE_FURNACE + ".png");
+
+    public RedstoneFurnaceScreen(final RedstoneFurnaceContainer container, final PlayerInventory inv, final ITextComponent titleIn) {
         super(container, inv, titleIn);
     }
 

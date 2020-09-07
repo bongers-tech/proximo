@@ -1,7 +1,7 @@
 modLoader = "javafml" #mandatory
 loaderVersion="[${forge_major},)" #mandatory
 issueTrackerURL = "https://github.com/bongers-tech/native-tech/issues" #optional
-authors="Bongers"
+authors="Jay Anthony Bongers"
 license = "GPL-3.0 License (https://github.com/bongers-tech/native-tech/blob/master/LICENSE)"
 
 [[mods]] #mandatory

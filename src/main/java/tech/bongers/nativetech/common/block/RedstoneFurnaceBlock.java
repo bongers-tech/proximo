@@ -41,16 +41,16 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
-import tech.bongers.nativetech.common.tileentity.RedstoneGeneratorTileEntity;
+import tech.bongers.nativetech.common.tileentity.RedstoneFurnaceTileEntity;
 
 import java.util.Random;
 
-public class RedstoneGeneratorBlock extends Block {
+public class RedstoneFurnaceBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
-    public RedstoneGeneratorBlock() {
+    public RedstoneFurnaceBlock() {
         super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
         this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
     }
@@ -62,7 +62,7 @@ public class RedstoneGeneratorBlock extends Block {
 
     @Override
     public TileEntity createTileEntity(final BlockState state, final IBlockReader world) {
-        return NativeTileEntity.REDSTONE_GENERATOR_TILE_ENTITY.get().create();
+        return NativeTileEntity.REDSTONE_FURNACE_TILE_ENTITY.get().create();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class RedstoneGeneratorBlock extends Block {
             final BlockRayTraceResult result) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof RedstoneGeneratorTileEntity) {
+            if (tileEntity instanceof RedstoneFurnaceTileEntity) {
                 NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
                 return ActionResultType.SUCCESS;
             }

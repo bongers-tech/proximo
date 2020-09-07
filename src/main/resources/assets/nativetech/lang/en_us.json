@@ -2,9 +2,9 @@
   "itemGroup.nativetech": "Native Tech",
 
   "block.nativetech.hardened_stone": "Hardened Stone",
-  "block.nativetech.redstone_generator": "Redstone Generator",
+  "block.nativetech.redstone_furnace": "Redstone Furnace",
 
-  "container.nativetech.redstone_generator": "Redstone Generator",
+  "container.nativetech.redstone_furnace": "Redstone Furnace",
 
   "item.nativetech.hardened_stone_sword": "Hardened Stone Sword"
 }

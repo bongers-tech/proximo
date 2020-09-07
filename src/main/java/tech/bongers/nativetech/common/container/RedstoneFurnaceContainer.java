@@ -29,29 +29,29 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 import tech.bongers.nativetech.common.block.NativeBlocks;
-import tech.bongers.nativetech.common.tileentity.RedstoneGeneratorTileEntity;
+import tech.bongers.nativetech.common.tileentity.RedstoneFurnaceTileEntity;
 import tech.bongers.nativetech.common.util.FunctionalIntReferenceHolder;
 
 import java.util.Objects;
 
-public class RedstoneGeneratorContainer extends Container {
+public class RedstoneFurnaceContainer extends Container {
 
     private final IWorldPosCallable canInteractWithCallable;
-    private final RedstoneGeneratorTileEntity tileEntity;
+    private final RedstoneFurnaceTileEntity tileEntity;
     private final FunctionalIntReferenceHolder currentBurnTime;
     private final FunctionalIntReferenceHolder currentSmeltTime;
 
     //Client
-    public RedstoneGeneratorContainer(final int id, final PlayerInventory playerInventory, final PacketBuffer data) {
+    public RedstoneFurnaceContainer(final int id, final PlayerInventory playerInventory, final PacketBuffer data) {
         this(id, playerInventory, getTileEntity(playerInventory, data));
     }
 
     //Server
-    public RedstoneGeneratorContainer(int id, final PlayerInventory inventory, final TileEntity tileEntity) {
-        super(NativeContainer.REDSTONE_GENERATOR_CONTAINER.get(), id);
+    public RedstoneFurnaceContainer(int id, final PlayerInventory inventory, final TileEntity tileEntity) {
+        super(NativeContainer.REDSTONE_FURNACE_CONTAINER.get(), id);
         Objects.requireNonNull(tileEntity.getWorld());
 
-        this.tileEntity = (RedstoneGeneratorTileEntity) tileEntity;
+        this.tileEntity = (RedstoneFurnaceTileEntity) tileEntity;
         this.canInteractWithCallable = IWorldPosCallable.of(tileEntity.getWorld(), tileEntity.getPos());
         this.currentBurnTime = new FunctionalIntReferenceHolder(this.tileEntity::getCurrentBurnTime, this.tileEntity::setCurrentBurnTime);
         this.currentSmeltTime = new FunctionalIntReferenceHolder(this.tileEntity::getCurrentSmeltTime, this.tileEntity::setCurrentSmeltTime);
@@ -64,7 +64,7 @@ public class RedstoneGeneratorContainer extends Container {
 
     @Override
     public boolean canInteractWith(final PlayerEntity playerEntity) {
-        return isWithinUsableDistance(canInteractWithCallable, playerEntity, NativeBlocks.REDSTONE_GENERATOR.get());
+        return isWithinUsableDistance(canInteractWithCallable, playerEntity, NativeBlocks.REDSTONE_FURNACE_BLOCK.get());
     }
 
     @Override
@@ -95,14 +95,14 @@ public class RedstoneGeneratorContainer extends Container {
     @OnlyIn(Dist.CLIENT)
     public int getSmeltProgressionScaled() {
         return currentSmeltTime.get() != 0
-                ? currentSmeltTime.get() * 24 / RedstoneGeneratorTileEntity.MAX_SMELT_TIME
+                ? currentSmeltTime.get() * 24 / RedstoneFurnaceTileEntity.MAX_SMELT_TIME
                 : 0;
     }
 
     @OnlyIn(Dist.CLIENT)
     public int getBurnLeftScaled() {
         return currentBurnTime.get() != 0
-                ? currentBurnTime.get() * 13 / RedstoneGeneratorTileEntity.MAX_BURN_TIME
+                ? currentBurnTime.get() * 13 / RedstoneFurnaceTileEntity.MAX_BURN_TIME
                 : 0;
     }
 
@@ -149,12 +149,12 @@ public class RedstoneGeneratorContainer extends Container {
         return mergeItemStack(stack, 0, invBase, false);
     }
 
-    private static RedstoneGeneratorTileEntity getTileEntity(final PlayerInventory playerInventory, final PacketBuffer data) {
+    private static RedstoneFurnaceTileEntity getTileEntity(final PlayerInventory playerInventory, final PacketBuffer data) {
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
         final TileEntity tileAtPosition = playerInventory.player.world.getTileEntity(data.readBlockPos());
-        if (tileAtPosition instanceof RedstoneGeneratorTileEntity) {
-            return (RedstoneGeneratorTileEntity) tileAtPosition;
+        if (tileAtPosition instanceof RedstoneFurnaceTileEntity) {
+            return (RedstoneFurnaceTileEntity) tileAtPosition;
         }
         throw new IllegalStateException("TileEntity is not correct " + tileAtPosition);
     }

@@ -15,21 +15,18 @@
  *     You should have received a copy of the GNU General Public License
  *     along with NativeTech. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.nativetech.common.item.group;
+package tech.bongers.nativetech.common.util;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import tech.bongers.nativetech.common.item.NativeItems;
-import tech.bongers.nativetech.common.util.Reference;
+public final class NativeProperties {
 
-public class NativeTechItemGroup extends ItemGroup {
-
-    public NativeTechItemGroup() {
-        super(Reference.MOD_ID);
+    private NativeProperties() {
+        // No-args
     }
 
-    @Override
-    public ItemStack createIcon() {
-        return new ItemStack(NativeItems.REDSTONE_FURNACE_ITEM.get());
-    }
+    // TEXTURES
+    public static final String PATH_TEXTURES = "textures/";
+    public static final String PATH_GUI = PATH_TEXTURES + "gui/";
+
+    // BLOCKS
+    public static final String REDSTONE_FURNACE = "redstone_furnace";
 }
