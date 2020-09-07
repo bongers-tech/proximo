@@ -86,7 +86,7 @@ public class RedstoneFurnaceBlock extends Block {
         if (world.isBlockPowered(pos)
                 && !entity.isImmuneToFire()
                 && entity instanceof LivingEntity
-                && !EnchantmentHelper.hasFrostWalker((LivingEntity) entity)){
+                && !EnchantmentHelper.hasFrostWalker((LivingEntity) entity)) {
             entity.attackEntityFrom(DamageSource.HOT_FLOOR, 1.0F);
         }
     }
@@ -109,7 +109,6 @@ public class RedstoneFurnaceBlock extends Block {
         }
         return ActionResultType.SUCCESS;
     }
-
 
     @Override
     public void animateTick(final BlockState stateIn, final World worldIn, final BlockPos pos, final Random rand) {

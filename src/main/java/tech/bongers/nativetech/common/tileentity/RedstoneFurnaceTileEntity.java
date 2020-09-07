@@ -35,6 +35,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -42,7 +43,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import tech.bongers.nativetech.common.container.RedstoneFurnaceContainer;
 import tech.bongers.nativetech.common.handler.RedstoneFurnaceItemHandler;
@@ -64,6 +64,8 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
     private final RedstoneFurnaceItemHandler inventory;
     private int currentSmeltTime;
     private int currentBurnTime;
+    private int maxSmeltTime;
+    private int maxBurnTime;
 
     public RedstoneFurnaceTileEntity() {
         this(NativeTileEntity.REDSTONE_FURNACE_TILE_ENTITY.get());
@@ -85,6 +87,11 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
     }
 
     @Override
+    public void remove() {
+        super.remove();
+    }
+
+    @Override
     public void tick() {
         boolean isBurningOnStart = isBurning();
         boolean dirty = false;
@@ -97,20 +104,24 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
             final ItemStack fuelStack = this.inventory.getStackInSlot(1);
 
             if (this.isBurning() || !itemstack.isEmpty() && !fuelStack.isEmpty()) {
-
                 final IRecipe<?> recipe = getRecipe(itemstack);
-                final BlockState blockDown = world.getBlockState(getPos().down());
-                if (!isBurning() && recipe != null && !fuelStack.isEmpty() && blockDown.isIn(Blocks.REDSTONE_BLOCK)) {
-                    currentBurnTime = MAX_BURN_TIME; //Should be based on pre-defined burn times
+                final int redStoneBlocks = getBlocksDown();
+
+                final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(redStoneBlocks, 1, 16) / 4, 1, 4);
+                maxSmeltTime = MAX_SMELT_TIME / smeltSpeedBonus;
+                maxBurnTime = (MAX_BURN_TIME * MathHelper.clamp(redStoneBlocks, 1, 16)) / smeltSpeedBonus;
+
+                if (!isBurning() && recipe != null && !fuelStack.isEmpty() && redStoneBlocks > 0) {
+                    currentBurnTime = maxBurnTime; //Should be based on pre-defined burn times
                     dirty = true;
                     fuelStack.shrink(1);
-                } else if (isBurning() && !blockDown.isIn(Blocks.REDSTONE_BLOCK)) {
+                } else if (isBurning() && redStoneBlocks == 0) {
                     currentSmeltTime = 0;
                 }
 
                 if (isBurning() && recipe != null) {
                     ++currentSmeltTime;
-                    if (currentSmeltTime == MAX_SMELT_TIME) { //Should be bases on pre-defined smelt times
+                    if (currentSmeltTime == maxSmeltTime) { //Should be bases on pre-defined smelt times
                         currentSmeltTime = 0;
                         smelt(recipe);
                         dirty = true;
@@ -118,7 +129,7 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
                 }
 
             } else if (currentSmeltTime > 0) {
-                this.currentSmeltTime = MathHelper.clamp(currentSmeltTime - 2, 0, MAX_SMELT_TIME);
+                this.currentSmeltTime = MathHelper.clamp(currentSmeltTime - 2, 0, maxSmeltTime);
             }
 
             if (isBurningOnStart != isBurning()) {
@@ -139,6 +150,9 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
         ItemStackHelper.loadAllItems(nbt, inv);
         inventory.setNonNullList(inv);
         currentSmeltTime = nbt.getInt("CurrentSmeltTime");
+        currentBurnTime = nbt.getInt("CurrentBurnTime");
+        maxSmeltTime = nbt.getInt("MaxSmeltTime");
+        maxBurnTime = nbt.getInt("MaxBurnTime");
     }
 
     @Override
@@ -146,6 +160,9 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
         super.write(nbt);
         ItemStackHelper.saveAllItems(nbt, inventory.toNonNullList());
         nbt.putInt("CurrentSmeltTime", currentSmeltTime);
+        nbt.putInt("CurrentBurnTime", currentBurnTime);
+        nbt.putInt("MaxSmeltTime", maxSmeltTime);
+        nbt.putInt("MaxBurnTime", maxBurnTime);
         return nbt;
     }
 
@@ -153,30 +170,6 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
     @Override
     public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
         return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> inventory));
-    }
-
-    public IItemHandlerModifiable getInventory() {
-        return inventory;
-    }
-
-    public int getCurrentBurnTime() {
-        return currentBurnTime;
-    }
-
-    public void setCurrentBurnTime(final int currentBurnTime) {
-        this.currentBurnTime = currentBurnTime;
-    }
-
-    public int getCurrentSmeltTime() {
-        return currentSmeltTime;
-    }
-
-    public void setCurrentSmeltTime(final int currentSmeltTime) {
-        this.currentSmeltTime = currentSmeltTime;
-    }
-
-    private boolean isBurning() {
-        return this.currentBurnTime > 0;
     }
 
     @Nullable
@@ -202,6 +195,18 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
                 .collect(Collectors.toSet());
     }
 
+    private int getBlocksDown() {
+        int redstoneBlocks = 0;
+        if (world != null && !world.isRemote) {
+            BlockPos blockPos = getPos();
+            while (redstoneBlocks < 16 && world.getBlockState(blockPos.down()).isIn(Blocks.REDSTONE_BLOCK)) {
+                redstoneBlocks++;
+                blockPos = blockPos.down();
+            }
+        }
+        return redstoneBlocks;
+    }
+
     private void smelt(@Nullable final IRecipe<?> recipe) {
         if (recipe != null) {
             final ItemStack outputStack = recipe.getRecipeOutput();
@@ -209,5 +214,47 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
             inventory.insertItem(2, outputStack.copy(), false);
             inventory.decreaseStackSize(0, 1);
         }
+    }
+
+    /* GETTERS */
+    public RedstoneFurnaceItemHandler getInventory() {
+        return inventory;
+    }
+
+    public int getCurrentSmeltTime() {
+        return currentSmeltTime;
+    }
+
+    public int getCurrentBurnTime() {
+        return currentBurnTime;
+    }
+
+    public int getMaxSmeltTime() {
+        return maxSmeltTime;
+    }
+
+    public int getMaxBurnTime() {
+        return maxBurnTime;
+    }
+
+    private boolean isBurning() {
+        return this.currentBurnTime > 0;
+    }
+
+    /* SETTERS */
+    public void setCurrentSmeltTime(final int currentSmeltTime) {
+        this.currentSmeltTime = currentSmeltTime;
+    }
+
+    public void setCurrentBurnTime(final int currentBurnTime) {
+        this.currentBurnTime = currentBurnTime;
+    }
+
+    public void setMaxSmeltTime(final int maxSmeltTime) {
+        this.maxSmeltTime = maxSmeltTime;
+    }
+
+    public void setMaxBurnTime(final int maxBurnTime) {
+        this.maxBurnTime = maxBurnTime;
     }
 }

@@ -51,11 +51,11 @@ public class RedstoneFurnaceScreen extends ContainerScreen<RedstoneFurnaceContai
         blit(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
 
         //Fire
-         int remaining = this.container.getBurnLeftScaled();
-         blit(stack, guiLeft + 56, guiTop + 36 + 13 - remaining, 176, 13 - remaining, 14, remaining + 1);
+        int remaining = container.getBurnLeftScaled();
+        blit(stack, guiLeft + 56, guiTop + 36 + 13 - remaining, 176, 13 - remaining, 14, remaining + 1);
 
         //Progression arrow
-        int progression = this.container.getSmeltProgressionScaled();
+        int progression = container.getSmeltProgressionScaled();
         blit(stack, guiLeft + 79, guiTop + 34, 176, 14, progression + 1, 16);
     }
 }

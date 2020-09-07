@@ -40,6 +40,8 @@ public class RedstoneFurnaceContainer extends Container {
     private final RedstoneFurnaceTileEntity tileEntity;
     private final FunctionalIntReferenceHolder currentBurnTime;
     private final FunctionalIntReferenceHolder currentSmeltTime;
+    private final FunctionalIntReferenceHolder maxBurnTime;
+    private final FunctionalIntReferenceHolder maxSmeltTime;
 
     //Client
     public RedstoneFurnaceContainer(final int id, final PlayerInventory playerInventory, final PacketBuffer data) {
@@ -53,10 +55,16 @@ public class RedstoneFurnaceContainer extends Container {
 
         this.tileEntity = (RedstoneFurnaceTileEntity) tileEntity;
         this.canInteractWithCallable = IWorldPosCallable.of(tileEntity.getWorld(), tileEntity.getPos());
+
         this.currentBurnTime = new FunctionalIntReferenceHolder(this.tileEntity::getCurrentBurnTime, this.tileEntity::setCurrentBurnTime);
         this.currentSmeltTime = new FunctionalIntReferenceHolder(this.tileEntity::getCurrentSmeltTime, this.tileEntity::setCurrentSmeltTime);
+        this.maxBurnTime = new FunctionalIntReferenceHolder(this.tileEntity::getMaxBurnTime, this.tileEntity::setMaxBurnTime);
+        this.maxSmeltTime = new FunctionalIntReferenceHolder(this.tileEntity::getMaxSmeltTime, this.tileEntity::setMaxSmeltTime);
+
         this.trackInt(this.currentBurnTime);
         this.trackInt(this.currentSmeltTime);
+        this.trackInt(this.maxBurnTime);
+        this.trackInt(this.maxSmeltTime);
 
         addBlockSlots();
         bindInventory(inventory);
@@ -95,14 +103,14 @@ public class RedstoneFurnaceContainer extends Container {
     @OnlyIn(Dist.CLIENT)
     public int getSmeltProgressionScaled() {
         return currentSmeltTime.get() != 0
-                ? currentSmeltTime.get() * 24 / RedstoneFurnaceTileEntity.MAX_SMELT_TIME
+                ? currentSmeltTime.get() * 24 / maxSmeltTime.get()
                 : 0;
     }
 
     @OnlyIn(Dist.CLIENT)
     public int getBurnLeftScaled() {
         return currentBurnTime.get() != 0
-                ? currentBurnTime.get() * 13 / RedstoneFurnaceTileEntity.MAX_BURN_TIME
+                ? currentBurnTime.get() * 13 / maxBurnTime.get()
                 : 0;
     }
 
