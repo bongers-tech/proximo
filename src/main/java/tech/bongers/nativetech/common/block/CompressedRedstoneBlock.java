@@ -15,22 +15,22 @@
  *     You should have received a copy of the GNU General Public License
  *     along with NativeTech. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.nativetech.common.util;
+package tech.bongers.nativetech.common.block;
 
-public final class NativeProperties {
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.RedstoneBlock;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 
-    private NativeProperties() {
-        // No-args
+public class CompressedRedstoneBlock extends RedstoneBlock {
+
+    public CompressedRedstoneBlock() {
+        super(AbstractBlock.Properties
+                .create(Material.IRON, MaterialColor.TNT)
+                .setRequiresTool()
+                .hardnessAndResistance(10.0F, 6.0F)
+                .sound(SoundType.METAL)
+        );
     }
-
-    /* TEXTURES */
-    public static final String PATH_TEXTURES = "textures/";
-    public static final String PATH_GUI = PATH_TEXTURES + "gui/";
-
-    /* BLOCKS */
-    public static final String COMPRESSED_REDSTONE_BLOCK = "compressed_redstone_block";
-    public static final String DOUBLE_COMPRESSED_REDSTONE_BLOCK = "double_compressed_redstone_block";
-
-    /* MACHINES */
-    public static final String REDSTONE_FURNACE = "redstone_furnace";
 }

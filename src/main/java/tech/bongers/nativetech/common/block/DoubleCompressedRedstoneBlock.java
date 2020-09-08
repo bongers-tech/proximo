@@ -18,18 +18,19 @@
 package tech.bongers.nativetech.common.block;
 
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
+import net.minecraft.block.RedstoneBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 
-public class HardenedStoneBlock extends Block {
+public class DoubleCompressedRedstoneBlock extends RedstoneBlock {
 
-    public HardenedStoneBlock() {
+    public DoubleCompressedRedstoneBlock() {
         super(AbstractBlock.Properties
-                .create(Material.ROCK, MaterialColor.IRON)
-                .hardnessAndResistance(1.5F, 6.0F)
-                .sound(SoundType.STONE)
+                .create(Material.IRON, MaterialColor.TNT)
+                .setRequiresTool()
+                .hardnessAndResistance(40, 12.0F)
+                .sound(SoundType.METAL)
         );
     }
 }

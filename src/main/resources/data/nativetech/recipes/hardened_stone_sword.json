@@ -3,14 +3,17 @@
     "item": "nativetech:hardened_stone_sword"
   },
   "pattern": [
-    "m",
+    "i",
     "m",
     "s"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
     "m": {
-      "item": "nativetech:hardened_stone"
+      "item": "minecraft:stone"
     },
     "s": {
       "item": "minecraft:stick"

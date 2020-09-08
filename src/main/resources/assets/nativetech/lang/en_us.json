@@ -1,7 +1,8 @@
 {
   "itemGroup.nativetech": "Native Tech",
 
-  "block.nativetech.hardened_stone": "Hardened Stone",
+  "block.nativetech.compressed_redstone_block": "Compressed Redstone block",
+  "block.nativetech.double_compressed_redstone_block": "Double compressed Redstone block",
   "block.nativetech.redstone_furnace": "Redstone Furnace",
 
   "container.nativetech.redstone_furnace": "Redstone Furnace",

@@ -18,7 +18,6 @@
 package tech.bongers.nativetech.common.tileentity;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -46,11 +45,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import tech.bongers.nativetech.common.container.RedstoneFurnaceContainer;
 import tech.bongers.nativetech.common.handler.RedstoneFurnaceItemHandler;
+import tech.bongers.nativetech.common.util.BonusBlockProperties;
 import tech.bongers.nativetech.common.util.Reference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,7 @@ import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURN
 
 public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
+    public static final int MAX_BONUS_BLOCKS = 16;
     public static final int MAX_SMELT_TIME = 50;
     public static final int MAX_BURN_TIME = 100;
 
@@ -87,11 +89,6 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
     }
 
     @Override
-    public void remove() {
-        super.remove();
-    }
-
-    @Override
     public void tick() {
         boolean isBurningOnStart = isBurning();
         boolean dirty = false;
@@ -105,25 +102,26 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
 
             if (this.isBurning() || !itemstack.isEmpty() && !fuelStack.isEmpty()) {
                 final IRecipe<?> recipe = getRecipe(itemstack);
-                final int redStoneBlocks = getBlocksDown();
+                final int bonusBlocks = getBonusBlocksBeneath(getPos());
 
-                final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(redStoneBlocks, 1, 16) / 4, 1, 4);
+                final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS) / 4, 1, 4);
+                //Should be bases on pre-defined smelt times
                 maxSmeltTime = MAX_SMELT_TIME / smeltSpeedBonus;
-                maxBurnTime = (MAX_BURN_TIME * MathHelper.clamp(redStoneBlocks, 1, 16)) / smeltSpeedBonus;
+                maxBurnTime = (MAX_BURN_TIME * MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS)) / smeltSpeedBonus;
 
-                if (!isBurning() && recipe != null && !fuelStack.isEmpty() && redStoneBlocks > 0) {
-                    currentBurnTime = maxBurnTime; //Should be based on pre-defined burn times
+                if (!isBurning() && recipe != null && !fuelStack.isEmpty() && bonusBlocks > 0) {
+                    currentBurnTime = maxBurnTime;
                     dirty = true;
                     fuelStack.shrink(1);
-                } else if (isBurning() && redStoneBlocks == 0) {
+                } else if (isBurning() && bonusBlocks == 0) {
                     currentSmeltTime = 0;
                 }
 
                 if (isBurning() && recipe != null) {
                     ++currentSmeltTime;
-                    if (currentSmeltTime == maxSmeltTime) { //Should be bases on pre-defined smelt times
+                    if (currentSmeltTime == maxSmeltTime) {
                         currentSmeltTime = 0;
-                        smelt(recipe);
+                        smelt(recipe, bonusBlocks);
                         dirty = true;
                     }
                 }
@@ -195,23 +193,27 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
                 .collect(Collectors.toSet());
     }
 
-    private int getBlocksDown() {
-        int redstoneBlocks = 0;
+    private int getBonusBlocksBeneath(final BlockPos pos) {
+        int bonusBlocks = 0;
         if (world != null && !world.isRemote) {
-            BlockPos blockPos = getPos();
-            while (redstoneBlocks < 16 && world.getBlockState(blockPos.down()).isIn(Blocks.REDSTONE_BLOCK)) {
-                redstoneBlocks++;
-                blockPos = blockPos.down();
+            BlockPos blockPos = pos;
+            final List<BonusBlockProperties> properties = BonusBlockProperties.forBlock(getBlockState().getBlock());
+            for (BonusBlockProperties property : properties) {
+                while (bonusBlocks < MAX_BONUS_BLOCKS && world.getBlockState(blockPos.down()).isIn(property.getBonusBlock())) {
+                    bonusBlocks += property.getBonus();
+                    blockPos = blockPos.down();
+                }
             }
         }
-        return redstoneBlocks;
+        return bonusBlocks;
     }
 
-    private void smelt(@Nullable final IRecipe<?> recipe) {
+    private void smelt(@Nullable final IRecipe<?> recipe, final int bonusBlocks) {
         if (recipe != null) {
-            final ItemStack outputStack = recipe.getRecipeOutput();
-            outputStack.setCount(2);
-            inventory.insertItem(2, outputStack.copy(), false);
+            final ItemStack outputStack = recipe.getRecipeOutput().copy();
+            final int count = bonusBlocks >= 16 ? 2 : 1;
+            outputStack.setCount(count);
+            inventory.insertItem(2, outputStack, false);
             inventory.decreaseStackSize(0, 1);
         }
     }

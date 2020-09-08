@@ -1,0 +1,8 @@
+{
+  "forge_marker": 1,
+  "variants": {
+    "": {
+      "model": "nativetech:block/double_compressed_redstone_block"
+	}
+  }
+}

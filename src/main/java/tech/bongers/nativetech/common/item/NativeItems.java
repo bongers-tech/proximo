@@ -25,7 +25,7 @@ import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.item.group.NativeTechItemGroup;
 import tech.bongers.nativetech.common.util.Reference;
 
-import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
+import static tech.bongers.nativetech.common.util.NativeProperties.*;
 
 public final class NativeItems {
 
@@ -36,10 +36,14 @@ public final class NativeItems {
     public static final ItemGroup CREATIVE_TAB = new NativeTechItemGroup();
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
-    // Item Blocks
-    public static final RegistryObject<Item> HARDENED_STONE_ITEM = ITEMS.register(
-            "hardened_stone",
-            () -> new BlockItem(NativeBlocks.HARDENED_STONE_BLOCK.get(), itemProperties())
+    /* ITEM BLOCKS */
+    public static final RegistryObject<Item> COMPRESSED_REDSTONE_ITEM = ITEMS.register(
+            COMPRESSED_REDSTONE_BLOCK,
+            () -> new BlockItem(NativeBlocks.COMPRESSED_REDSTONE_BLOCK.get(), itemProperties())
+    );
+    public static final RegistryObject<Item> DOUBLE_COMPRESSED_REDSTONE_ITEM = ITEMS.register(
+            DOUBLE_COMPRESSED_REDSTONE_BLOCK,
+            () -> new BlockItem(NativeBlocks.DOUBLE_COMPRESSED_REDSTONE_BLOCK.get(), itemProperties())
     );
 
     public static final RegistryObject<Item> REDSTONE_FURNACE_ITEM = ITEMS.register(
@@ -47,7 +51,7 @@ public final class NativeItems {
             () -> new BlockItem(NativeBlocks.REDSTONE_FURNACE_BLOCK.get(), itemProperties())
     );
 
-    // Items
+    /* ITEMS */
     public static final RegistryObject<Item> HARDENED_STONE_SWORD = ITEMS.register(
             "hardened_stone_sword",
             () -> new SwordItem(ItemTier.IRON, 4, -2.4F, itemProperties())
