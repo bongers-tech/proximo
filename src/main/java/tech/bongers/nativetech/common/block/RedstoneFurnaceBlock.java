@@ -45,6 +45,8 @@ import tech.bongers.nativetech.common.tileentity.RedstoneFurnaceTileEntity;
 
 import java.util.Random;
 
+import static tech.bongers.nativetech.common.util.NativeUtils.dropItemStackIntoWorld;
+
 public class RedstoneFurnaceBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -108,6 +110,20 @@ public class RedstoneFurnaceBlock extends Block {
             }
         }
         return ActionResultType.SUCCESS;
+    }
+
+    @Override
+    public void onBlockHarvested(final World world, final BlockPos pos, final BlockState state, final PlayerEntity playerEntity) {
+        if (!world.isRemote) {
+            final TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof RedstoneFurnaceTileEntity) {
+                final RedstoneFurnaceTileEntity te = (RedstoneFurnaceTileEntity) tileEntity;
+                te.getInventory().toNonNullList().forEach(itemStack -> {
+                    dropItemStackIntoWorld(itemStack, world, pos);
+                });
+            }
+        }
+        super.onBlockHarvested(world, pos, state, playerEntity);
     }
 
     @Override
