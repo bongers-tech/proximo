@@ -104,14 +104,14 @@ public class RedstoneFurnaceContainer extends Container {
 
     @OnlyIn(Dist.CLIENT)
     public int getSmeltProgressionScaled() {
-        return currentSmeltTime.get() != 0
+        return currentSmeltTime.get() != 0 && maxSmeltTime.get() != 0
                 ? currentSmeltTime.get() * 24 / maxSmeltTime.get()
                 : 0;
     }
 
     @OnlyIn(Dist.CLIENT)
     public int getBurnLeftScaled() {
-        return currentBurnTime.get() != 0
+        return currentBurnTime.get() != 0 && maxBurnTime.get() != 0
                 ? currentBurnTime.get() * 13 / maxBurnTime.get()
                 : 0;
     }
