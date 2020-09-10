@@ -24,6 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import tech.bongers.nativetech.common.util.NativeProperties;
 import tech.bongers.nativetech.common.util.Reference;
 
+import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
 import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
 
 public final class NativeBlocks {
@@ -40,4 +41,5 @@ public final class NativeBlocks {
 
     /* MACHINES */
     public static final RegistryObject<Block> REDSTONE_FURNACE_BLOCK = BLOCKS.register(REDSTONE_FURNACE, RedstoneFurnaceBlock::new);
+    public static final RegistryObject<Block> COMPACTOR_BLOCK = BLOCKS.register(COMPACTOR, CompactorBlock::new);
 }

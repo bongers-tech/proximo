@@ -33,4 +33,5 @@ public final class NativeProperties {
 
     /* MACHINES */
     public static final String REDSTONE_FURNACE = "redstone_furnace";
+    public static final String COMPACTOR = "compactor";
 }
