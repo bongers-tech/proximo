@@ -39,7 +39,7 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
     private int process;
 
     public CompactorTileEntity() {
-        super(NativeTileEntity.REDSTONE_FURNACE_TILE_ENTITY.get(), new NativeItemHandler(2));
+        super(NativeTileEntity.COMPACTOR_TILE_ENTITY.get(), new NativeItemHandler(2));
     }
 
     @Override

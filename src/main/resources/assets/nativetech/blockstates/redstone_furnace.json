@@ -1,12 +1,10 @@
 {
   "variants": {
     "facing=east,lit=false": {
-      "model": "nativetech:block/redstone_furnace",
-      "y": 90
+      "model": "nativetech:block/redstone_furnace"
     },
     "facing=east,lit=true": {
-      "model": "nativetech:block/redstone_furnace_on",
-      "y": 90
+      "model": "nativetech:block/redstone_furnace_on"
     },
     "facing=north,lit=false": {
       "model": "nativetech:block/redstone_furnace"
@@ -15,20 +13,16 @@
       "model": "nativetech:block/redstone_furnace_on"
     },
     "facing=south,lit=false": {
-      "model": "nativetech:block/redstone_furnace",
-      "y": 180
+      "model": "nativetech:block/redstone_furnace"
     },
     "facing=south,lit=true": {
-      "model": "nativetech:block/redstone_furnace_on",
-      "y": 180
+      "model": "nativetech:block/redstone_furnace_on"
     },
     "facing=west,lit=false": {
-      "model": "nativetech:block/redstone_furnace",
-      "y": 270
+      "model": "nativetech:block/redstone_furnace"
     },
     "facing=west,lit=true": {
-      "model": "nativetech:block/redstone_furnace_on",
-      "y": 270
+      "model": "nativetech:block/redstone_furnace_on"
     }
   }
 }

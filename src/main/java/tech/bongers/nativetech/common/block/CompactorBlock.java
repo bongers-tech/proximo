@@ -20,32 +20,21 @@ package tech.bongers.nativetech.common.block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
-import tech.bongers.nativetech.common.tileentity.CompactorTileEntity;
 import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
 
 import java.util.Random;
 
 public class CompactorBlock extends AbstractNativeTileBlock {
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty LIT = BooleanProperty.create("lit");
-
     public CompactorBlock() {
         super(Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
-        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, true));
     }
 
     @Override
@@ -56,11 +45,11 @@ public class CompactorBlock extends AbstractNativeTileBlock {
     @Override
     protected ActionResultType onTileBlockActivated(final World world, final BlockPos pos, final PlayerEntity playerEntity) {
         if (!world.isRemote) {
-            final TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof CompactorTileEntity) {
-                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
-                return ActionResultType.SUCCESS;
-            }
+            //final TileEntity tileEntity = world.getTileEntity(pos);
+            //if (tileEntity instanceof CompactorTileEntity) {
+            //    NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
+            //    return ActionResultType.SUCCESS;
+            //}
         }
         return ActionResultType.SUCCESS;
     }
