@@ -23,9 +23,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.item.group.NativeTechItemGroup;
+import tech.bongers.nativetech.common.util.NativeProperties;
 import tech.bongers.nativetech.common.util.Reference;
-
-import static tech.bongers.nativetech.common.util.NativeProperties.*;
 
 public final class NativeItems {
 
@@ -37,17 +36,17 @@ public final class NativeItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
     /* ITEM BLOCKS */
-    public static final RegistryObject<Item> COMPRESSED_REDSTONE_ITEM = ITEMS.register(
-            COMPRESSED_REDSTONE_BLOCK,
+    public static final RegistryObject<Item> COMPRESSED_REDSTONE_BLOCK = ITEMS.register(
+            NativeProperties.COMPRESSED_REDSTONE_BLOCK,
             () -> new BlockItem(NativeBlocks.COMPRESSED_REDSTONE_BLOCK.get(), itemProperties())
     );
-    public static final RegistryObject<Item> DOUBLE_COMPRESSED_REDSTONE_ITEM = ITEMS.register(
-            DOUBLE_COMPRESSED_REDSTONE_BLOCK,
+    public static final RegistryObject<Item> DOUBLE_COMPRESSED_REDSTONE_BLOCK = ITEMS.register(
+            NativeProperties.DOUBLE_COMPRESSED_REDSTONE_BLOCK,
             () -> new BlockItem(NativeBlocks.DOUBLE_COMPRESSED_REDSTONE_BLOCK.get(), itemProperties())
     );
 
-    public static final RegistryObject<Item> REDSTONE_FURNACE_ITEM = ITEMS.register(
-            REDSTONE_FURNACE,
+    public static final RegistryObject<Item> REDSTONE_FURNACE = ITEMS.register(
+            NativeProperties.REDSTONE_FURNACE,
             () -> new BlockItem(NativeBlocks.REDSTONE_FURNACE_BLOCK.get(), itemProperties())
     );
 

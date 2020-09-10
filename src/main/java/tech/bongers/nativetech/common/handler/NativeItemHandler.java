@@ -21,9 +21,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class RedstoneFurnaceItemHandler extends ItemStackHandler {
+public class NativeItemHandler extends ItemStackHandler {
 
-    public RedstoneFurnaceItemHandler(final int size) {
+    public NativeItemHandler(final int size) {
         super(size);
     }
 

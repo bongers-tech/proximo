@@ -17,18 +17,28 @@
  */
 package tech.bongers.nativetech.common.gui.slot;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.FurnaceFuelSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
+import tech.bongers.nativetech.common.block.NativeBlocks;
+import tech.bongers.nativetech.common.util.FuelProperties;
 
-public class RedstoneFuelSlot extends FurnaceFuelSlot {
+public class RedstoneFuelSlot extends SlotItemHandler {
 
-    public RedstoneFuelSlot(IInventory inventory, int index, int xPosition, int yPosition) {
-        super(null, inventory, index, xPosition, yPosition);
+    public RedstoneFuelSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+        super(itemHandler, index, xPosition, yPosition);
     }
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return true; //stack.getItem() == Items.REDSTONE;
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        return FuelProperties
+                .forBlock(NativeBlocks.REDSTONE_FURNACE_BLOCK.get())
+                .stream()
+                .map(FuelProperties::getFuel)
+                .anyMatch(item -> stack.getItem() == item);
     }
 }

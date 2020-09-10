@@ -44,8 +44,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import tech.bongers.nativetech.common.container.RedstoneFurnaceContainer;
-import tech.bongers.nativetech.common.handler.RedstoneFurnaceItemHandler;
+import tech.bongers.nativetech.common.handler.NativeItemHandler;
 import tech.bongers.nativetech.common.util.BonusBlockProperties;
+import tech.bongers.nativetech.common.util.FuelProperties;
 import tech.bongers.nativetech.common.util.Reference;
 
 import javax.annotation.Nonnull;
@@ -60,10 +61,8 @@ import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURN
 public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     public static final int MAX_BONUS_BLOCKS = 16;
-    public static final int MAX_SMELT_TIME = 50;
-    public static final int MAX_BURN_TIME = 100;
 
-    private final RedstoneFurnaceItemHandler inventory;
+    private final NativeItemHandler inventory;
     private int currentSmeltTime;
     private int currentBurnTime;
     private int maxSmeltTime;
@@ -75,7 +74,7 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
 
     private RedstoneFurnaceTileEntity(final TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.inventory = new RedstoneFurnaceItemHandler(3);
+        this.inventory = new NativeItemHandler(3);
     }
 
     @Override
@@ -104,15 +103,16 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
                 final IRecipe<?> recipe = getRecipe(itemstack);
                 final int bonusBlocks = getBonusBlocksBeneath(getPos());
 
-                final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS) / 4, 1, 4);
-                //Should be bases on pre-defined smelt times
-                maxSmeltTime = MAX_SMELT_TIME / smeltSpeedBonus;
-                maxBurnTime = (MAX_BURN_TIME * MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS)) / smeltSpeedBonus;
-
                 if (!isBurning() && recipe != null && !fuelStack.isEmpty() && bonusBlocks > 0) {
+
+                    final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS) / 4, 1, 4);
+                    maxSmeltTime = FuelProperties.getSmeltTimeForFuel(fuelStack.getItem()) / smeltSpeedBonus;
+                    maxBurnTime = (FuelProperties.getBurnTimeForFuel(fuelStack.getItem()) * MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS)) / smeltSpeedBonus;
+
                     currentBurnTime = maxBurnTime;
-                    dirty = true;
                     fuelStack.shrink(1);
+                    dirty = true;
+
                 } else if (isBurning() && bonusBlocks == 0) {
                     currentSmeltTime = 0;
                 }
@@ -219,7 +219,7 @@ public class RedstoneFurnaceTileEntity extends TileEntity implements ITickableTi
     }
 
     /* GETTERS */
-    public RedstoneFurnaceItemHandler getInventory() {
+    public NativeItemHandler getInventory() {
         return inventory;
     }
 

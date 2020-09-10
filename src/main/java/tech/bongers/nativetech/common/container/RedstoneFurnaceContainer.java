@@ -29,7 +29,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 import tech.bongers.nativetech.common.block.NativeBlocks;
+import tech.bongers.nativetech.common.gui.slot.RedstoneFuelSlot;
 import tech.bongers.nativetech.common.tileentity.RedstoneFurnaceTileEntity;
+import tech.bongers.nativetech.common.util.FuelProperties;
 import tech.bongers.nativetech.common.util.FunctionalIntReferenceHolder;
 
 import java.util.Objects;
@@ -143,7 +145,7 @@ public class RedstoneFurnaceContainer extends Container {
 
     private void addBlockSlots() {
         addSlot(new SlotItemHandler(tileEntity.getInventory(), 0, 56, 17));
-        addSlot(new SlotItemHandler(tileEntity.getInventory(), 1, 56, 53));
+        addSlot(new RedstoneFuelSlot(tileEntity.getInventory(), 1, 56, 53));
         addSlot(new SlotItemHandler(tileEntity.getInventory(), 2, 116, 35));
     }
 
@@ -153,6 +155,8 @@ public class RedstoneFurnaceContainer extends Container {
 
         if (slotIndex < invBase) {
             return mergeItemStack(stack, invBase, invFull, true);
+        } else if (FuelProperties.isFuel(stack.getItem())) {
+            return mergeItemStack(stack, 1, 2, false);
         }
         return mergeItemStack(stack, 0, invBase, false);
     }

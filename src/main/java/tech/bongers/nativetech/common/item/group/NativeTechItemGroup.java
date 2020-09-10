@@ -30,6 +30,6 @@ public class NativeTechItemGroup extends ItemGroup {
 
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(NativeItems.REDSTONE_FURNACE_ITEM.get());
+        return new ItemStack(NativeItems.REDSTONE_FURNACE.get());
     }
 }
