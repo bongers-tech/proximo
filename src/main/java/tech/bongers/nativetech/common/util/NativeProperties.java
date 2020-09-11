@@ -18,6 +18,8 @@
 package tech.bongers.nativetech.common.util;
 
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 
 public final class NativeProperties {
 
@@ -38,6 +40,9 @@ public final class NativeProperties {
     public static final String COMPACTOR = "compactor";
 
     /* BLOCK STATES */
-    public static final BooleanProperty FACING = BooleanProperty.create("facing");
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+
+    /* MISC */
+    public static final String CONTAINER_SUFFIX = "_container";
 }

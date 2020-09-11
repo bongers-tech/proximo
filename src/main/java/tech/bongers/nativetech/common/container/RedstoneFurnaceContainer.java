@@ -17,29 +17,25 @@
  */
 package tech.bongers.nativetech.common.container;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IWorldPosCallable;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.gui.slot.RedstoneFuelSlot;
+import tech.bongers.nativetech.common.gui.slot.ResultSlot;
+import tech.bongers.nativetech.common.tileentity.AbstractNativeTileEntity;
 import tech.bongers.nativetech.common.tileentity.RedstoneFurnaceTileEntity;
 import tech.bongers.nativetech.common.util.FuelProperties;
 import tech.bongers.nativetech.common.util.FunctionalIntReferenceHolder;
 
 import java.util.Objects;
 
-public class RedstoneFurnaceContainer extends Container {
+public class RedstoneFurnaceContainer extends AbstractNativeContainer<RedstoneFurnaceTileEntity> {
 
-    private final IWorldPosCallable canInteractWithCallable;
-    private final RedstoneFurnaceTileEntity tileEntity;
     private final FunctionalIntReferenceHolder currentBurnTime;
     private final FunctionalIntReferenceHolder currentSmeltTime;
     private final FunctionalIntReferenceHolder maxBurnTime;
@@ -47,59 +43,35 @@ public class RedstoneFurnaceContainer extends Container {
 
     //Client
     public RedstoneFurnaceContainer(final int id, final PlayerInventory playerInventory, final PacketBuffer data) {
-        this(id, playerInventory, getTileEntity(playerInventory, data));
+        this(id, playerInventory, getTileEntityFromData(playerInventory, data));
     }
 
     //Server
-    public RedstoneFurnaceContainer(int id, final PlayerInventory inventory, final TileEntity tileEntity) {
-        super(NativeContainer.REDSTONE_FURNACE_CONTAINER.get(), id);
+    public RedstoneFurnaceContainer(int id, final PlayerInventory playerInventory, final AbstractNativeTileEntity tileEntity) {
+        super(NativeContainer.REDSTONE_FURNACE_CONTAINER.get(), id, playerInventory, tileEntity);
         Objects.requireNonNull(tileEntity.getWorld());
 
-        this.tileEntity = (RedstoneFurnaceTileEntity) tileEntity;
-        this.canInteractWithCallable = IWorldPosCallable.of(tileEntity.getWorld(), tileEntity.getPos());
-
-        this.currentBurnTime = new FunctionalIntReferenceHolder(this.tileEntity::getCurrentBurnTime, this.tileEntity::setCurrentBurnTime);
-        this.currentSmeltTime = new FunctionalIntReferenceHolder(this.tileEntity::getCurrentSmeltTime, this.tileEntity::setCurrentSmeltTime);
-        this.maxBurnTime = new FunctionalIntReferenceHolder(this.tileEntity::getMaxBurnTime, this.tileEntity::setMaxBurnTime);
-        this.maxSmeltTime = new FunctionalIntReferenceHolder(this.tileEntity::getMaxSmeltTime, this.tileEntity::setMaxSmeltTime);
+        this.currentBurnTime = new FunctionalIntReferenceHolder(getTileEntity()::getCurrentBurnTime, getTileEntity()::setCurrentBurnTime);
+        this.currentSmeltTime = new FunctionalIntReferenceHolder(getTileEntity()::getCurrentSmeltTime, getTileEntity()::setCurrentSmeltTime);
+        this.maxBurnTime = new FunctionalIntReferenceHolder(getTileEntity()::getMaxBurnTime, getTileEntity()::setMaxBurnTime);
+        this.maxSmeltTime = new FunctionalIntReferenceHolder(getTileEntity()::getMaxSmeltTime, getTileEntity()::setMaxSmeltTime);
 
         this.trackInt(this.currentBurnTime);
         this.trackInt(this.currentSmeltTime);
         this.trackInt(this.maxBurnTime);
         this.trackInt(this.maxSmeltTime);
-
-        addBlockSlots();
-        bindInventory(inventory);
     }
 
     @Override
-    public boolean canInteractWith(final PlayerEntity playerEntity) {
-        return isWithinUsableDistance(canInteractWithCallable, playerEntity, NativeBlocks.REDSTONE_FURNACE_BLOCK.get());
+    protected void addContainerSlots() {
+        addSlot(new SlotItemHandler(getTileEntity().getInventory(), 0, 56, 17));
+        addSlot(new RedstoneFuelSlot(getTileEntity().getInventory(), 1, 56, 53));
+        addSlot(new ResultSlot(getTileEntity().getInventory(), 2, 116, 35));
     }
 
     @Override
-    public ItemStack transferStackInSlot(final PlayerEntity player, final int slotIndex) {
-        ItemStack stack = ItemStack.EMPTY;
-        final Slot slot = inventorySlots.get(slotIndex);
-
-        if (slot != null && slot.getHasStack()) {
-            final ItemStack stackInSlot = slot.getStack();
-            stack = stackInSlot.copy();
-
-            if (!performMerge(slotIndex, stackInSlot)) {
-                return ItemStack.EMPTY;
-            }
-            slot.onSlotChange(stackInSlot, stack);
-
-            final ItemStack itemStack = stackInSlot.getCount() <= 0 ? ItemStack.EMPTY : stackInSlot;
-            slot.putStack(itemStack);
-
-            if (stackInSlot.getCount() == stack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-            slot.onTake(player, stackInSlot);
-        }
-        return stack;
+    protected Block getTargetBlock() {
+        return NativeBlocks.REDSTONE_FURNACE_BLOCK.get();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -116,40 +88,7 @@ public class RedstoneFurnaceContainer extends Container {
                 : 0;
     }
 
-    private void bindInventory(final PlayerInventory inventory) {
-        final int startX = 8;
-        final int startY = 84;
-
-        final int totalRows = 3;
-        final int slotsInRow = 9;
-        final int slotSize = 18; //slot = 16, border = 2
-
-        // Player inventory. 36 slots
-        for (int row = 0; row < totalRows; row++) {
-            for (int column = 0; column < slotsInRow; column++) {
-                final int index = (row * slotsInRow) + column + slotsInRow;
-                final int xPosition = startX + column * slotSize;
-                final int yPosition = startY + row * slotSize;
-                addSlot(new Slot(inventory, index, xPosition, yPosition));
-            }
-        }
-
-        //Player hotbar
-        final int hotBarOffset = 4;
-        for (int column = 0; column < slotsInRow; column++) {
-            final int xPosition = startX + column * slotSize;
-            final int yPosition = startY + (slotSize * totalRows) + hotBarOffset;
-            addSlot(new Slot(inventory, column, xPosition, yPosition));
-        }
-    }
-
-    private void addBlockSlots() {
-        addSlot(new SlotItemHandler(tileEntity.getInventory(), 0, 56, 17));
-        addSlot(new RedstoneFuelSlot(tileEntity.getInventory(), 1, 56, 53));
-        addSlot(new SlotItemHandler(tileEntity.getInventory(), 2, 116, 35));
-    }
-
-    private boolean performMerge(final int slotIndex, final ItemStack stack) {
+    protected boolean performMerge(final int slotIndex, final ItemStack stack) {
         int invBase = 3;
         int invFull = inventorySlots.size();
 
@@ -159,15 +98,5 @@ public class RedstoneFurnaceContainer extends Container {
             return mergeItemStack(stack, 1, 2, false);
         }
         return mergeItemStack(stack, 0, invBase, false);
-    }
-
-    private static RedstoneFurnaceTileEntity getTileEntity(final PlayerInventory playerInventory, final PacketBuffer data) {
-        Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
-        Objects.requireNonNull(data, "data cannot be null");
-        final TileEntity tileAtPosition = playerInventory.player.world.getTileEntity(data.readBlockPos());
-        if (tileAtPosition instanceof RedstoneFurnaceTileEntity) {
-            return (RedstoneFurnaceTileEntity) tileAtPosition;
-        }
-        throw new IllegalStateException("TileEntity is not correct " + tileAtPosition);
     }
 }

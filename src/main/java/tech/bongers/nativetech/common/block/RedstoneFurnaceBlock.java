@@ -18,7 +18,6 @@
 package tech.bongers.nativetech.common.block;
 
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -27,39 +26,25 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
 import tech.bongers.nativetech.common.tileentity.RedstoneFurnaceTileEntity;
+import tech.bongers.nativetech.common.util.NativeProperties;
 
 import java.util.Random;
 
 import static tech.bongers.nativetech.common.util.NativeUtils.dropItemStackIntoWorld;
 
-public class RedstoneFurnaceBlock extends Block {
-
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty LIT = BooleanProperty.create("lit");
+public class RedstoneFurnaceBlock extends AbstractNativeTileBlock {
 
     public RedstoneFurnaceBlock() {
         super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
-        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
-    }
-
-    @Override
-    public boolean hasTileEntity(final BlockState state) {
-        return true;
     }
 
     @Override
@@ -68,19 +53,8 @@ public class RedstoneFurnaceBlock extends Block {
     }
 
     @Override
-    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
-        builder.add(FACING, LIT);
-    }
-
-    @Override
     public int getLightValue(final BlockState state, final IBlockReader world, final BlockPos pos) {
-        return state.get(LIT) ? 12 : 0;
-    }
-
-    @Override
-    public BlockState getStateForPlacement(final BlockItemUseContext context) {
-        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+        return state.get(NativeProperties.ACTIVE) ? 12 : 0;
     }
 
     @Override
@@ -94,14 +68,7 @@ public class RedstoneFurnaceBlock extends Block {
     }
 
     @Override
-    @SuppressWarnings("deprecation") //Overriding is fine
-    public ActionResultType onBlockActivated(
-            final BlockState state,
-            final World world,
-            final BlockPos pos,
-            final PlayerEntity playerEntity,
-            final Hand hand,
-            final BlockRayTraceResult result) {
+    protected ActionResultType onTileBlockActivated(World world, BlockPos pos, PlayerEntity playerEntity) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof RedstoneFurnaceTileEntity) {
@@ -127,17 +94,17 @@ public class RedstoneFurnaceBlock extends Block {
     }
 
     @Override
-    public void animateTick(final BlockState stateIn, final World worldIn, final BlockPos pos, final Random rand) {
-        if (stateIn.get(LIT)) {
+    public void animateTick(final BlockState stateIn, final World world, final BlockPos pos, final Random rand) {
+        if (stateIn.get(NativeProperties.ACTIVE)) {
             final double xPos = pos.getX();
             final double yPos = pos.getY() + 0.8D;
             final double zPos = pos.getZ();
 
             if (rand.nextDouble() < 0.1D) {
-                worldIn.playSound(xPos, yPos, zPos, SoundEvents.BLOCK_BLASTFURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                world.playSound(xPos, yPos, zPos, SoundEvents.BLOCK_BLASTFURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
             }
 
-            final Direction direction = stateIn.get(FACING);
+            final Direction direction = stateIn.get(NativeProperties.FACING);
             final Direction.AxisDirection axisDirection = direction.getAxisDirection();
             final Direction.Axis axis = direction.getAxis();
 
@@ -147,7 +114,7 @@ public class RedstoneFurnaceBlock extends Block {
 
             final double xDest = axisDirection == Direction.AxisDirection.POSITIVE ? xPos + xOffset : xPos - xOffset;
             final double zDest = axisDirection == Direction.AxisDirection.POSITIVE ? zPos + zOffset : zPos - zOffset;
-            worldIn.addParticle(ParticleTypes.LARGE_SMOKE, xDest, yPos + yOffset, zDest, 0.0D, 0.0D, 0.0D);
+            world.addParticle(ParticleTypes.LARGE_SMOKE, xDest, yPos + yOffset, zDest, 0.0D, 0.0D, 0.0D);
         }
     }
 }

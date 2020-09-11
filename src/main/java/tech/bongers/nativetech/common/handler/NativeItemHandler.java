@@ -27,6 +27,10 @@ public class NativeItemHandler extends ItemStackHandler {
         super(size);
     }
 
+    public boolean hasItems() {
+        return !stacks.isEmpty();
+    }
+
     public NonNullList<ItemStack> toNonNullList() {
         NonNullList<ItemStack> items = NonNullList.create();
         items.addAll(stacks);

@@ -24,7 +24,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import tech.bongers.nativetech.common.util.Reference;
 
-import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
+import static tech.bongers.nativetech.common.util.NativeProperties.*;
 
 public final class NativeContainer {
 
@@ -34,6 +34,13 @@ public final class NativeContainer {
 
     public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
 
-    public static final RegistryObject<ContainerType<RedstoneFurnaceContainer>> REDSTONE_FURNACE_CONTAINER = CONTAINERS.register(REDSTONE_FURNACE + "_container", () -> IForgeContainerType.create(RedstoneFurnaceContainer::new));
+    public static final RegistryObject<ContainerType<RedstoneFurnaceContainer>> REDSTONE_FURNACE_CONTAINER = CONTAINERS.register(
+            REDSTONE_FURNACE + CONTAINER_SUFFIX,
+            () -> IForgeContainerType.create(RedstoneFurnaceContainer::new)
+    );
+    public static final RegistryObject<ContainerType<CompactorContainer>> COMPACTOR_CONTAINER = CONTAINERS.register(
+            COMPACTOR + CONTAINER_SUFFIX,
+            () -> IForgeContainerType.create(CompactorContainer::new)
+    );
 
 }
