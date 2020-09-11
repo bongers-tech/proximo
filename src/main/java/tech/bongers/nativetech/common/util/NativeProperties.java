@@ -17,6 +17,8 @@
  */
 package tech.bongers.nativetech.common.util;
 
+import net.minecraft.state.BooleanProperty;
+
 public final class NativeProperties {
 
     private NativeProperties() {
@@ -34,4 +36,8 @@ public final class NativeProperties {
     /* MACHINES */
     public static final String REDSTONE_FURNACE = "redstone_furnace";
     public static final String COMPACTOR = "compactor";
+
+    /* BLOCK STATES */
+    public static final BooleanProperty FACING = BooleanProperty.create("facing");
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 }

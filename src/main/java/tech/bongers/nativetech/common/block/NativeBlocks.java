@@ -41,5 +41,5 @@ public final class NativeBlocks {
 
     /* MACHINES */
     public static final RegistryObject<Block> REDSTONE_FURNACE_BLOCK = BLOCKS.register(REDSTONE_FURNACE, RedstoneFurnaceBlock::new);
-    public static final RegistryObject<AbstractNativeTileBlock> COMPACTOR_BLOCK = BLOCKS.register(COMPACTOR, CompactorBlock::new);
+    public static final RegistryObject<Block> COMPACTOR_BLOCK = BLOCKS.register(COMPACTOR, CompactorBlock::new);
 }

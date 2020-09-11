@@ -20,13 +20,12 @@ package tech.bongers.nativetech.common.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -38,11 +37,10 @@ import static tech.bongers.nativetech.common.util.NativeUtils.dropItemStackIntoW
 public abstract class AbstractNativeTileBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty LIT = BooleanProperty.create("lit");
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public AbstractNativeTileBlock(final Properties properties) {
         super(properties);
-        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, true));
     }
 
     @Override
@@ -51,9 +49,15 @@ public abstract class AbstractNativeTileBlock extends Block {
     }
 
     @Override
-    public BlockState getStateForPlacement(final BlockItemUseContext context) {
-        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(FACING, ACTIVE);
     }
+
+    //@Override
+    //public BlockState getStateForPlacement(final BlockItemUseContext context) {
+    //    return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+    //}
 
     @Override
     public void onBlockHarvested(final World world, final BlockPos pos, final BlockState state, final PlayerEntity playerEntity) {

@@ -17,9 +17,11 @@
  */
 package tech.bongers.nativetech.common.block;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -34,7 +36,8 @@ import java.util.Random;
 public class CompactorBlock extends AbstractNativeTileBlock {
 
     public CompactorBlock() {
-        super(Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
+        super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
+        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, true));
     }
 
     @Override
@@ -43,15 +46,20 @@ public class CompactorBlock extends AbstractNativeTileBlock {
     }
 
     @Override
+    public BlockState getStateForPlacement(final BlockItemUseContext context) {
+        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+    }
+
+    @Override
     protected ActionResultType onTileBlockActivated(final World world, final BlockPos pos, final PlayerEntity playerEntity) {
-        if (!world.isRemote) {
+        //if (!world.isRemote) {
             //final TileEntity tileEntity = world.getTileEntity(pos);
             //if (tileEntity instanceof CompactorTileEntity) {
             //    NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
             //    return ActionResultType.SUCCESS;
             //}
-        }
-        return ActionResultType.SUCCESS;
+        //}
+        return ActionResultType.PASS;
     }
 
     @Override
