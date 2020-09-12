@@ -23,6 +23,7 @@ import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 @SuppressWarnings("ConstantConditions")
 public class CompactingInventory extends CraftingInventory {
@@ -64,5 +65,9 @@ public class CompactingInventory extends CraftingInventory {
     @Override
     public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
         stackList[slot] = stack;
+    }
+
+    public boolean hasFullGrid() {
+        return IntStream.range(0, stackList.length).noneMatch(i -> stackList[i].isEmpty());
     }
 }

@@ -35,8 +35,9 @@ import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import tech.bongers.nativetech.common.NativeTech;
-import tech.bongers.nativetech.common.handler.NativeItemHandler;
+import tech.bongers.nativetech.common.item.handler.NativeItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,6 +45,7 @@ import javax.annotation.Nullable;
 public abstract class AbstractNativeTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     private final NativeItemHandler inventory;
+    private LazyOptional<IItemHandler> handler = LazyOptional.empty();
 
     public AbstractNativeTileEntity(final TileEntityType<?> tileEntityTypeIn, final NativeItemHandler inventory) {
         super(tileEntityTypeIn);
@@ -70,12 +72,6 @@ public abstract class AbstractNativeTileEntity extends TileEntity implements ITi
         return nbt;
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
-        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getInventory));
-    }
-
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
@@ -93,8 +89,24 @@ public abstract class AbstractNativeTileEntity extends TileEntity implements ITi
         return write(new CompoundNBT());
     }
 
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return getItemHandlerCapability().cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
     public NativeItemHandler getInventory() {
         return inventory;
+    }
+
+    public <T> LazyOptional<T> getItemHandlerCapability() {
+        if (!handler.isPresent()) {
+            handler = LazyOptional.of(inventory::getManagedItemHandler);
+        }
+        return handler.cast();
     }
 
     protected abstract String getItemName();

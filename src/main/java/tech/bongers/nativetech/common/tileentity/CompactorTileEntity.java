@@ -26,8 +26,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import tech.bongers.nativetech.common.container.CompactorContainer;
-import tech.bongers.nativetech.common.handler.NativeItemHandler;
-import tech.bongers.nativetech.common.inventory.InventoryType;
+import tech.bongers.nativetech.common.inventory.CompactingInventory;
+import tech.bongers.nativetech.common.item.handler.NativeItemHandler;
 
 import static tech.bongers.nativetech.common.util.NativeProperties.ACTIVE;
 import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
@@ -42,8 +42,7 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
     private int process = 0;
 
     public CompactorTileEntity() {
-        // split input and output inventories
-        super(NativeTileEntity.COMPACTOR_TILE_ENTITY.get(), new NativeItemHandler(18, InventoryType.INPUT));
+        super(NativeTileEntity.COMPACTOR_TILE_ENTITY.get(), new NativeItemHandler(9, 9));
     }
 
     @Override
@@ -99,7 +98,14 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
 
     private void findRecipeForInput() {
         final ItemStack itemStack = getInventory().getStackInSlot(currentIndex);
-        final IRecipe<?> compactingRecipe = getCompactingRecipe(world, itemStack);
+        final CompactingInventory smallGrid = new CompactingInventory(itemStack, 2, 2);
+        final CompactingInventory largeGrid = new CompactingInventory(itemStack, 3, 3);
+
+        IRecipe<?> compactingRecipe = getCompactingRecipe(world, itemStack, largeGrid);
+        if (compactingRecipe == null) {
+            compactingRecipe = getCompactingRecipe(world, itemStack, smallGrid);
+        }
+
         if (itemStack.isEmpty() || compactingRecipe == null) {
             currentIndex = currentIndex < 8 ? currentIndex + 1 : 0;
         } else {

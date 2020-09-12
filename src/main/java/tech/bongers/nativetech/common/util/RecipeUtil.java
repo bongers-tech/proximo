@@ -24,8 +24,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.world.World;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
-import tech.bongers.nativetech.common.handler.NativeItemHandler;
 import tech.bongers.nativetech.common.inventory.CompactingInventory;
+import tech.bongers.nativetech.common.item.handler.NativeItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -63,20 +63,16 @@ public final class RecipeUtil {
     }
 
     @Nullable
-    public static ICraftingRecipe getCompactingRecipe(final World world, final ItemStack stack) {
+    public static ICraftingRecipe getCompactingRecipe(final World world, final ItemStack stack, final CompactingInventory grid) {
         if (world != null && stack != null) {
-
             final CompactingInventory reversion = new CompactingInventory(stack, 1, 1);
-            final CompactingInventory smallGrid = new CompactingInventory(stack, 2, 2);
-            final CompactingInventory largeGrid = new CompactingInventory(stack, 3, 3);
-
             final Set<IRecipe<?>> recipes = findRecipesForType(world, IRecipeType.CRAFTING);
             for (IRecipe<?> recipe : recipes) {
                 if (recipe instanceof ICraftingRecipe) {
                     final ICraftingRecipe craftingRecipe = (ICraftingRecipe) recipe;
                     if (!recipeMatchesInventory(world, craftingRecipe, reversion)
-                            && (recipeMatchesInventory(world, craftingRecipe, smallGrid)
-                            || recipeMatchesInventory(world, craftingRecipe, largeGrid))) {
+                            && grid.hasFullGrid()
+                            && recipeMatchesInventory(world, craftingRecipe, grid)) {
                         return craftingRecipe;
                     }
                 }

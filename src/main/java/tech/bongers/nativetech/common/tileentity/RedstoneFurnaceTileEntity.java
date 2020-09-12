@@ -25,11 +25,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import tech.bongers.nativetech.common.container.RedstoneFurnaceContainer;
-import tech.bongers.nativetech.common.handler.NativeItemHandler;
-import tech.bongers.nativetech.common.inventory.InventoryType;
+import tech.bongers.nativetech.common.item.handler.NativeItemHandler;
 import tech.bongers.nativetech.common.util.BonusBlockProperties;
 import tech.bongers.nativetech.common.util.FuelProperties;
 
@@ -49,8 +49,7 @@ public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
     private int maxBurnTime;
 
     public RedstoneFurnaceTileEntity() {
-        // split input and output inventories
-        super(NativeTileEntity.REDSTONE_FURNACE_TILE_ENTITY.get(), new NativeItemHandler(3, InventoryType.INPUT));
+        super(NativeTileEntity.REDSTONE_FURNACE_TILE_ENTITY.get(), new NativeItemHandler(2, 1).setSlotAsFuelSlot(1));
     }
 
     @Override
@@ -96,30 +95,31 @@ public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
 
             if (this.isBurning() || !itemstack.isEmpty() && !fuelStack.isEmpty()) {
                 final IRecipe<?> recipe = getRecipeForInventoryAndType(world, getInventory(), IRecipeType.BLASTING);
-                final int bonusBlocks = getBonusBlocksBeneath(getPos());
+                final int bonusBlocks = getBonusBlocks(getPos());
 
-                if (!isBurning() && recipe != null && !fuelStack.isEmpty() && bonusBlocks > 0) {
+                if (canSmelt(recipe, bonusBlocks)) {
+                    if (!isBurning() && recipe != null && !fuelStack.isEmpty() && bonusBlocks > 0) {
 
-                    final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS) / 4, 1, 4);
-                    maxSmeltTime = FuelProperties.getSmeltTimeForFuel(fuelStack.getItem()) / smeltSpeedBonus;
-                    maxBurnTime = (FuelProperties.getBurnTimeForFuel(fuelStack.getItem()) * MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS)) / smeltSpeedBonus;
+                        final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS) / 4, 1, 4);
+                        maxSmeltTime = FuelProperties.getSmeltTimeForFuel(fuelStack.getItem()) / smeltSpeedBonus;
+                        maxBurnTime = (FuelProperties.getBurnTimeForFuel(fuelStack.getItem()) * MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS)) / smeltSpeedBonus;
 
-                    currentBurnTime = maxBurnTime;
-                    fuelStack.shrink(1);
-                    dirty = true;
-
-                } else if (isBurning() && bonusBlocks == 0) {
-                    currentSmeltTime = 0;
-                }
-
-                if (isBurning() && recipe != null) {
-                    ++currentSmeltTime;
-                    if (currentSmeltTime == maxSmeltTime) {
-                        smelt(recipe, bonusBlocks);
+                        currentBurnTime = maxBurnTime;
+                        fuelStack.shrink(1);
                         dirty = true;
+
+                    } else if (isBurning() && bonusBlocks == 0) {
+                        currentSmeltTime = 0;
+                    }
+
+                    if (isBurning() && recipe != null) {
+                        ++currentSmeltTime;
+                        if (currentSmeltTime == maxSmeltTime) {
+                            smelt(recipe, bonusBlocks);
+                            dirty = true;
+                        }
                     }
                 }
-
             } else if (currentSmeltTime > 0) {
                 this.currentSmeltTime = MathHelper.clamp(currentSmeltTime - 2, 0, maxSmeltTime);
             }
@@ -135,15 +135,18 @@ public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
         }
     }
 
-    private int getBonusBlocksBeneath(final BlockPos pos) {
+    private int getBonusBlocks(final BlockPos pos) {
         int bonusBlocks = 0;
         if (world != null && !world.isRemote) {
             BlockPos blockPos = pos;
             final List<BonusBlockProperties> properties = BonusBlockProperties.forBlock(getBlockState().getBlock());
             for (BonusBlockProperties property : properties) {
-                while (bonusBlocks < MAX_BONUS_BLOCKS && world.getBlockState(blockPos.down()).isIn(property.getBonusBlock())) {
-                    bonusBlocks += property.getBonus();
-                    blockPos = blockPos.down();
+                for (Direction direction : Direction.values()) {
+                    while (bonusBlocks < MAX_BONUS_BLOCKS && world.getBlockState(blockPos.offset(direction)).isIn(property.getBonusBlock())) {
+                        bonusBlocks += property.getBonus();
+                        blockPos = blockPos.down();
+                    }
+                    blockPos = pos;
                 }
             }
         }
@@ -152,13 +155,23 @@ public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
 
     private void smelt(final IRecipe<?> recipe, final int bonusBlocks) {
         if (recipe != null) {
-            currentSmeltTime = 0;
             final ItemStack outputStack = recipe.getRecipeOutput().copy();
             final int count = bonusBlocks >= 16 ? 2 : 1;
+
+            currentSmeltTime = 0;
             outputStack.setCount(count);
             getInventory().insertItem(2, outputStack, false);
             getInventory().decreaseStackSize(0, 1);
         }
+    }
+
+    private boolean canSmelt(final IRecipe<?> recipe, final int bonusBlocks) {
+        final int count = bonusBlocks >= 16 ? 2 : 1;
+        final ItemStack outputSlot = getInventory().getStackInSlot(2);
+        return (outputSlot.isEmpty()
+                || (recipe != null
+                && outputSlot.getItem() == recipe.getRecipeOutput().getItem()
+                && outputSlot.getCount() + count <= outputSlot.getMaxStackSize()));
     }
 
     /* GETTERS */

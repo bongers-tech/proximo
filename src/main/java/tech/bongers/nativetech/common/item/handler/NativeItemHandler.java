@@ -15,24 +15,28 @@
  *     You should have received a copy of the GNU General Public License
  *     along with NativeTech. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.nativetech.common.handler;
+package tech.bongers.nativetech.common.item.handler;
 
-import com.sun.istack.internal.NotNull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
-import tech.bongers.nativetech.common.inventory.InventoryType;
-
-import static tech.bongers.nativetech.common.inventory.InventoryType.INPUT;
-import static tech.bongers.nativetech.common.inventory.InventoryType.OUTPUT;
 
 public class NativeItemHandler extends ItemStackHandler {
 
-    private final InventoryType inventoryType;
+    private final ManagedItemHandler managedItemHandler;
 
-    public NativeItemHandler(final int size, final InventoryType inventoryType) {
-        super(size);
-        this.inventoryType = inventoryType;
+    public NativeItemHandler(final int inputSlots, final int outputSlots) {
+        super(inputSlots + outputSlots);
+        this.managedItemHandler = new ManagedItemHandler(this, inputSlots, outputSlots);
+    }
+
+    public NativeItemHandler setSlotAsFuelSlot(final int fuelSlot) {
+        this.managedItemHandler.setSlotAsFuelSlot(fuelSlot);
+        return this;
+    }
+
+    public ManagedItemHandler getManagedItemHandler() {
+        return managedItemHandler;
     }
 
     public boolean hasItems() {
@@ -61,17 +65,5 @@ public class NativeItemHandler extends ItemStackHandler {
         final ItemStack stack = getStackInSlot(index);
         stack.shrink(count);
         onContentsChanged(index);
-    }
-
-    @NotNull
-    @Override
-    public ItemStack insertItem(final int slot, @NotNull final ItemStack stack, final boolean simulate) {
-        return INPUT.equals(inventoryType) ? super.insertItem(slot, stack, simulate) : ItemStack.EMPTY;
-    }
-
-    @NotNull
-    @Override
-    public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
-        return OUTPUT.equals(inventoryType) ? super.extractItem(slot, amount, simulate) : ItemStack.EMPTY;
     }
 }
