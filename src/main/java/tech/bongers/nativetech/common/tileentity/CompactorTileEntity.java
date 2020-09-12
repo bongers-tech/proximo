@@ -113,17 +113,23 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
         if (world != null && stack != null) {
 
             // Improve logic to also include 2x2 crafting recipes
+            final CompactingInventory reversion = new CompactingInventory(1, 1);
             final CompactingInventory compacting = new CompactingInventory(3, 3);
+
             for (int i = 0, n = MathHelper.clamp(stack.getCount(), 0, 9); i < n; i++) {
                 compacting.setInventorySlotContents(i, stack);
             }
+            for (int i = 0, n = MathHelper.clamp(stack.getCount(), 0, 1); i < n; i++) {
+                reversion.setInventorySlotContents(i, stack);
+            }
+
             final Set<IRecipe<?>> recipes = findRecipesForType(world, IRecipeType.CRAFTING);
             for (IRecipe<?> recipe : recipes) {
                 if (recipe instanceof ICraftingRecipe && ((ICraftingRecipe) recipe).matches(compacting, world)) {
                     final ICraftingRecipe craftingRecipe = (ICraftingRecipe) recipe;
 
                     // Must include check to not match reversion (e.g. ingot to nugget)
-                    if (craftingRecipe.matches(compacting, world)) {
+                    if (craftingRecipe.matches(compacting, world) && !craftingRecipe.matches(reversion, world)) {
                         final ItemStack result = craftingRecipe.getCraftingResult(compacting);
                         if (!result.isEmpty()) {
                             return craftingRecipe;

@@ -56,9 +56,8 @@ public class CompactorBlock extends AbstractNativeTileBlock {
             final TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof CompactorTileEntity) {
                 NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
-                return ActionResultType.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 }

@@ -73,7 +73,6 @@ public class RedstoneFurnaceBlock extends AbstractNativeTileBlock {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof RedstoneFurnaceTileEntity) {
                 NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
-                return ActionResultType.SUCCESS;
             }
         }
         return ActionResultType.SUCCESS;
