@@ -22,7 +22,7 @@ import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import tech.bongers.nativetech.common.util.Reference;
+import tech.bongers.nativetech.common.NativeTech;
 
 import static tech.bongers.nativetech.common.util.NativeProperties.*;
 
@@ -32,7 +32,7 @@ public final class NativeContainer {
         // No-args
     }
 
-    public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
+    public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, NativeTech.MOD_ID);
 
     public static final RegistryObject<ContainerType<RedstoneFurnaceContainer>> REDSTONE_FURNACE_CONTAINER = CONTAINERS.register(
             REDSTONE_FURNACE + CONTAINER_SUFFIX,

@@ -23,15 +23,15 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import tech.bongers.nativetech.common.NativeTech;
 import tech.bongers.nativetech.common.container.CompactorContainer;
-import tech.bongers.nativetech.common.util.Reference;
 
 import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
 import static tech.bongers.nativetech.common.util.NativeProperties.PATH_GUI;
 
 public class CompactorScreen extends ContainerScreen<CompactorContainer> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, PATH_GUI + COMPACTOR + ".png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(NativeTech.MOD_ID, PATH_GUI + COMPACTOR + ".png");
 
     public CompactorScreen(final CompactorContainer container, final PlayerInventory inv, final ITextComponent titleIn) {
         super(container, inv, titleIn);

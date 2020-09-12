@@ -21,10 +21,10 @@ import net.minecraft.item.*;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import tech.bongers.nativetech.common.NativeTech;
 import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.item.group.NativeTechItemGroup;
 import tech.bongers.nativetech.common.util.NativeProperties;
-import tech.bongers.nativetech.common.util.Reference;
 
 public final class NativeItems {
 
@@ -33,7 +33,7 @@ public final class NativeItems {
     }
 
     public static final ItemGroup CREATIVE_TAB = new NativeTechItemGroup();
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, NativeTech.MOD_ID);
 
     /* ITEM BLOCKS */
     public static final RegistryObject<Item> COMPRESSED_REDSTONE_BLOCK = ITEMS.register(

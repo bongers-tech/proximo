@@ -32,6 +32,8 @@ import tech.bongers.nativetech.common.util.FunctionalIntReferenceHolder;
 
 import java.util.Objects;
 
+import static tech.bongers.nativetech.common.tileentity.CompactorTileEntity.PROCESSING_TIME;
+
 public class CompactorContainer extends AbstractNativeContainer<CompactorTileEntity> {
 
     private final FunctionalIntReferenceHolder process;
@@ -90,7 +92,7 @@ public class CompactorContainer extends AbstractNativeContainer<CompactorTileEnt
     @OnlyIn(Dist.CLIENT)
     public int getProcessScaled() {
         return process.get() != 0
-                ? process.get() * 24 / 34
+                ? process.get() * 24 / PROCESSING_TIME
                 : 0;
     }
 

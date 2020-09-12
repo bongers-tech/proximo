@@ -22,24 +22,22 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.BlastingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 import tech.bongers.nativetech.common.container.RedstoneFurnaceContainer;
 import tech.bongers.nativetech.common.handler.NativeItemHandler;
+import tech.bongers.nativetech.common.inventory.InventoryType;
 import tech.bongers.nativetech.common.util.BonusBlockProperties;
 import tech.bongers.nativetech.common.util.FuelProperties;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Set;
 
 import static tech.bongers.nativetech.common.util.NativeProperties.ACTIVE;
 import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
+import static tech.bongers.nativetech.common.util.RecipeUtil.getRecipeForInventoryAndType;
 
 public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
 
@@ -51,7 +49,8 @@ public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
     private int maxBurnTime;
 
     public RedstoneFurnaceTileEntity() {
-        super(NativeTileEntity.REDSTONE_FURNACE_TILE_ENTITY.get(), new NativeItemHandler(3));
+        // split input and output inventories
+        super(NativeTileEntity.REDSTONE_FURNACE_TILE_ENTITY.get(), new NativeItemHandler(3, InventoryType.INPUT));
     }
 
     @Override
@@ -62,60 +61,6 @@ public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
     @Override
     public Container createMenu(final int id, final PlayerInventory playerInventory, final PlayerEntity playerEntity) {
         return new RedstoneFurnaceContainer(id, playerInventory, this);
-    }
-
-    @Override
-    public void tick() {
-        boolean isBurningOnStart = isBurning();
-        boolean dirty = false;
-        if (isBurning()) {
-            --currentBurnTime;
-        }
-
-        if (world != null && !world.isRemote) {
-            final ItemStack itemstack = getInventory().getStackInSlot(0);
-            final ItemStack fuelStack = getInventory().getStackInSlot(1);
-
-            if (this.isBurning() || !itemstack.isEmpty() && !fuelStack.isEmpty()) {
-                final IRecipe<?> recipe = getRecipe(itemstack);
-                final int bonusBlocks = getBonusBlocksBeneath(getPos());
-
-                if (!isBurning() && recipe != null && !fuelStack.isEmpty() && bonusBlocks > 0) {
-
-                    final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS) / 4, 1, 4);
-                    maxSmeltTime = FuelProperties.getSmeltTimeForFuel(fuelStack.getItem()) / smeltSpeedBonus;
-                    maxBurnTime = (FuelProperties.getBurnTimeForFuel(fuelStack.getItem()) * MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS)) / smeltSpeedBonus;
-
-                    currentBurnTime = maxBurnTime;
-                    fuelStack.shrink(1);
-                    dirty = true;
-
-                } else if (isBurning() && bonusBlocks == 0) {
-                    currentSmeltTime = 0;
-                }
-
-                if (isBurning() && recipe != null) {
-                    ++currentSmeltTime;
-                    if (currentSmeltTime == maxSmeltTime) {
-                        currentSmeltTime = 0;
-                        smelt(recipe, bonusBlocks);
-                        dirty = true;
-                    }
-                }
-
-            } else if (currentSmeltTime > 0) {
-                this.currentSmeltTime = MathHelper.clamp(currentSmeltTime - 2, 0, maxSmeltTime);
-            }
-
-            if (isBurningOnStart != isBurning()) {
-                dirty = true;
-                world.setBlockState(getPos(), getBlockState().with(ACTIVE, isBurning()));
-            }
-        }
-
-        if (dirty) {
-            markDirty();
-        }
     }
 
     @Override
@@ -137,18 +82,57 @@ public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
         return nbt;
     }
 
-    @Nullable
-    private BlastingRecipe getRecipe(final ItemStack stack) {
-        if (world != null && stack != null) {
-            final Set<IRecipe<?>> recipes = findRecipesForType(world, IRecipeType.BLASTING);
-            for (IRecipe<?> iRecipe : recipes) {
-                BlastingRecipe recipe = (BlastingRecipe) iRecipe;
-                if (recipe.matches(new RecipeWrapper(getInventory()), world)) {
-                    return recipe;
+    @Override
+    public void tick() {
+        boolean isBurningOnStart = isBurning();
+        boolean dirty = false;
+        if (isBurning()) {
+            --currentBurnTime;
+        }
+
+        if (world != null && !world.isRemote) {
+            final ItemStack itemstack = getInventory().getStackInSlot(0);
+            final ItemStack fuelStack = getInventory().getStackInSlot(1);
+
+            if (this.isBurning() || !itemstack.isEmpty() && !fuelStack.isEmpty()) {
+                final IRecipe<?> recipe = getRecipeForInventoryAndType(world, getInventory(), IRecipeType.BLASTING);
+                final int bonusBlocks = getBonusBlocksBeneath(getPos());
+
+                if (!isBurning() && recipe != null && !fuelStack.isEmpty() && bonusBlocks > 0) {
+
+                    final int smeltSpeedBonus = MathHelper.clamp(MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS) / 4, 1, 4);
+                    maxSmeltTime = FuelProperties.getSmeltTimeForFuel(fuelStack.getItem()) / smeltSpeedBonus;
+                    maxBurnTime = (FuelProperties.getBurnTimeForFuel(fuelStack.getItem()) * MathHelper.clamp(bonusBlocks, 1, MAX_BONUS_BLOCKS)) / smeltSpeedBonus;
+
+                    currentBurnTime = maxBurnTime;
+                    fuelStack.shrink(1);
+                    dirty = true;
+
+                } else if (isBurning() && bonusBlocks == 0) {
+                    currentSmeltTime = 0;
                 }
+
+                if (isBurning() && recipe != null) {
+                    ++currentSmeltTime;
+                    if (currentSmeltTime == maxSmeltTime) {
+                        smelt(recipe, bonusBlocks);
+                        dirty = true;
+                    }
+                }
+
+            } else if (currentSmeltTime > 0) {
+                this.currentSmeltTime = MathHelper.clamp(currentSmeltTime - 2, 0, maxSmeltTime);
+            }
+
+            if (isBurningOnStart != isBurning()) {
+                dirty = true;
+                world.setBlockState(getPos(), getBlockState().with(ACTIVE, isBurning()));
             }
         }
-        return null;
+
+        if (dirty) {
+            markDirty();
+        }
     }
 
     private int getBonusBlocksBeneath(final BlockPos pos) {
@@ -166,8 +150,9 @@ public class RedstoneFurnaceTileEntity extends AbstractNativeTileEntity {
         return bonusBlocks;
     }
 
-    private void smelt(@Nullable final IRecipe<?> recipe, final int bonusBlocks) {
+    private void smelt(final IRecipe<?> recipe, final int bonusBlocks) {
         if (recipe != null) {
+            currentSmeltTime = 0;
             final ItemStack outputStack = recipe.getRecipeOutput().copy();
             final int count = bonusBlocks >= 16 ? 2 : 1;
             outputStack.setCount(count);

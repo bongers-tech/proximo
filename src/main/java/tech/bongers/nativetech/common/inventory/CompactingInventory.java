@@ -15,10 +15,11 @@
  *     You should have received a copy of the GNU General Public License
  *     along with NativeTech. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.nativetech.common.handler;
+package tech.bongers.nativetech.common.inventory;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -28,10 +29,13 @@ public class CompactingInventory extends CraftingInventory {
 
     private final ItemStack[] stackList;
 
-    public CompactingInventory(final int width, final int height) {
+    public CompactingInventory(final ItemStack itemStack, final int width, final int height) {
         super(null, width, height);
         stackList = new ItemStack[width * height];
         Arrays.fill(stackList, ItemStack.EMPTY);
+        for (int i = 0, n = MathHelper.clamp(itemStack.getCount(), 0, (width * height)); i < n; i++) {
+            setInventorySlotContents(i, itemStack);
+        }
     }
 
     @Override

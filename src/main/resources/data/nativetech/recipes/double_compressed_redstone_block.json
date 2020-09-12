@@ -1,11 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "RR",
-    "RR"
+    "##",
+    "##"
   ],
   "key": {
-    "R": {
+    "#": {
       "item": "nativetech:compressed_redstone_block"
     }
   },

@@ -15,13 +15,11 @@
  *     You should have received a copy of the GNU General Public License
  *     along with NativeTech. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.nativetech.common.util;
+package tech.bongers.nativetech.common.inventory;
 
-public final class Reference {
+public enum InventoryType {
 
-    private Reference() {
-        // No-args
-    }
+    INPUT,
+    OUTPUT
 
-    public static final String MOD_ID = "nativetech";
 }

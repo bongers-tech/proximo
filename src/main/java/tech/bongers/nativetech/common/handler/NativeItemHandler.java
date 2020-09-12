@@ -17,14 +17,22 @@
  */
 package tech.bongers.nativetech.common.handler;
 
+import com.sun.istack.internal.NotNull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
+import tech.bongers.nativetech.common.inventory.InventoryType;
+
+import static tech.bongers.nativetech.common.inventory.InventoryType.INPUT;
+import static tech.bongers.nativetech.common.inventory.InventoryType.OUTPUT;
 
 public class NativeItemHandler extends ItemStackHandler {
 
-    public NativeItemHandler(final int size) {
+    private final InventoryType inventoryType;
+
+    public NativeItemHandler(final int size, final InventoryType inventoryType) {
         super(size);
+        this.inventoryType = inventoryType;
     }
 
     public boolean hasItems() {
@@ -53,5 +61,17 @@ public class NativeItemHandler extends ItemStackHandler {
         final ItemStack stack = getStackInSlot(index);
         stack.shrink(count);
         onContentsChanged(index);
+    }
+
+    @NotNull
+    @Override
+    public ItemStack insertItem(final int slot, @NotNull final ItemStack stack, final boolean simulate) {
+        return INPUT.equals(inventoryType) ? super.insertItem(slot, stack, simulate) : ItemStack.EMPTY;
+    }
+
+    @NotNull
+    @Override
+    public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+        return OUTPUT.equals(inventoryType) ? super.extractItem(slot, amount, simulate) : ItemStack.EMPTY;
     }
 }

@@ -36,13 +36,13 @@ import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.container.NativeContainer;
 import tech.bongers.nativetech.common.item.NativeItems;
 import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
-import tech.bongers.nativetech.common.util.Reference;
 
 import java.util.stream.Collectors;
 
-@Mod(Reference.MOD_ID)
+@Mod(NativeTech.MOD_ID)
 public class NativeTech {
 
+    public static final String MOD_ID = "nativetech";
     private static final Logger LOGGER = LogManager.getLogger();
 
     public NativeTech() {
@@ -66,7 +66,7 @@ public class NativeTech {
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
-        InterModComms.sendTo(Reference.MOD_ID, "helloworld", () -> "Hello world");
+        InterModComms.sendTo(NativeTech.MOD_ID, "helloworld", () -> "Hello world");
     }
 
     private void processIMC(final InterModProcessEvent event) {

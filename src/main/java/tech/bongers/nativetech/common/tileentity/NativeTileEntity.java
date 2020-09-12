@@ -21,8 +21,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import tech.bongers.nativetech.common.NativeTech;
 import tech.bongers.nativetech.common.block.NativeBlocks;
-import tech.bongers.nativetech.common.util.Reference;
 
 import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
 import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
@@ -33,7 +33,7 @@ public final class NativeTileEntity {
         // No-args
     }
 
-    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
+    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, NativeTech.MOD_ID);
 
     public static final RegistryObject<TileEntityType<RedstoneFurnaceTileEntity>> REDSTONE_FURNACE_TILE_ENTITY = TILE_ENTITIES.register(
             REDSTONE_FURNACE,

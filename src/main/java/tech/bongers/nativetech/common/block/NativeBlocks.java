@@ -21,8 +21,8 @@ import net.minecraft.block.Block;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import tech.bongers.nativetech.common.NativeTech;
 import tech.bongers.nativetech.common.util.NativeProperties;
-import tech.bongers.nativetech.common.util.Reference;
 
 import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
 import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
@@ -33,7 +33,7 @@ public final class NativeBlocks {
         // No-args
     }
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, NativeTech.MOD_ID);
 
     /* BLOCKS */
     public static final RegistryObject<Block> COMPRESSED_REDSTONE_BLOCK = BLOCKS.register(NativeProperties.COMPRESSED_REDSTONE_BLOCK, CompressedRedstoneBlock::new);

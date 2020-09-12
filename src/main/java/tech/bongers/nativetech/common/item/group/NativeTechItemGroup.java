@@ -19,13 +19,13 @@ package tech.bongers.nativetech.common.item.group;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import tech.bongers.nativetech.common.NativeTech;
 import tech.bongers.nativetech.common.item.NativeItems;
-import tech.bongers.nativetech.common.util.Reference;
 
 public class NativeTechItemGroup extends ItemGroup {
 
     public NativeTechItemGroup() {
-        super(Reference.MOD_ID);
+        super(NativeTech.MOD_ID);
     }
 
     @Override

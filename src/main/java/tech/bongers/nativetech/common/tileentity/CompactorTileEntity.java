@@ -22,28 +22,28 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import tech.bongers.nativetech.common.container.CompactorContainer;
-import tech.bongers.nativetech.common.handler.CompactingInventory;
 import tech.bongers.nativetech.common.handler.NativeItemHandler;
-
-import javax.annotation.Nullable;
-import java.util.Set;
+import tech.bongers.nativetech.common.inventory.InventoryType;
 
 import static tech.bongers.nativetech.common.util.NativeProperties.ACTIVE;
 import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
+import static tech.bongers.nativetech.common.util.RecipeUtil.getCompactingRecipe;
 
 public class CompactorTileEntity extends AbstractNativeTileEntity {
 
+    public static final int PROCESSING_TIME = 34;
+
+    private IRecipe<?> recipe;
     private int currentIndex = 0;
     private int process = 0;
 
     public CompactorTileEntity() {
-        super(NativeTileEntity.COMPACTOR_TILE_ENTITY.get(), new NativeItemHandler(18));
+        // split input and output inventories
+        super(NativeTileEntity.COMPACTOR_TILE_ENTITY.get(), new NativeItemHandler(18, InventoryType.INPUT));
     }
 
     @Override
@@ -54,43 +54,6 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
     @Override
     public Container createMenu(final int id, final PlayerInventory playerInventory, final PlayerEntity playerEntity) {
         return new CompactorContainer(id, playerInventory, this);
-    }
-
-    @Override
-    public void tick() { // Refactor method to a cleaner solution
-        boolean isActivatedOnStart = isActivated();
-        boolean dirty = false;
-        if (world != null && !world.isRemote) {
-
-            if (getInventory().hasItems() && !isActivated()) {
-                final ItemStack itemStack = getInventory().getStackInSlot(currentIndex);
-                if (itemStack.isEmpty() || getRecipe(itemStack) == null) {
-                    currentIndex = currentIndex < 8 ? currentIndex + 1 : 0;
-                } else if (getRecipe(itemStack) != null) {
-                    process = 1;
-                }
-            } else {
-                ++process;
-                if (process == 34) {
-                    process = 0;
-                    dirty = true;
-                    final ICraftingRecipe recipe = getRecipe(getInventory().getStackInSlot(currentIndex));
-                    if (recipe != null) {
-                        getInventory().insertItem(currentIndex + 9, recipe.getRecipeOutput().copy(), false);
-                        getInventory().decreaseStackSize(currentIndex, 9);
-                    }
-                }
-            }
-
-            if (isActivatedOnStart != isActivated()) {
-                dirty = true;
-                world.setBlockState(getPos(), getBlockState().with(ACTIVE, isActivated()));
-            }
-        }
-
-        if (dirty) {
-            markDirty();
-        }
     }
 
     @Override
@@ -108,37 +71,67 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
         return nbt;
     }
 
-    @Nullable
-    private ICraftingRecipe getRecipe(final ItemStack stack) {
-        if (world != null && stack != null) {
+    @Override
+    public void tick() {
+        boolean isActivatedOnStart = isActivated();
+        boolean dirty = false;
 
-            // Improve logic to also include 2x2 crafting recipes
-            final CompactingInventory reversion = new CompactingInventory(1, 1);
-            final CompactingInventory compacting = new CompactingInventory(3, 3);
-
-            for (int i = 0, n = MathHelper.clamp(stack.getCount(), 0, 9); i < n; i++) {
-                compacting.setInventorySlotContents(i, stack);
+        if (world != null && !world.isRemote) {
+            if (getInventory().hasItems() && !isActivated()) {
+                findRecipeForInput();
+            } else {
+                process = MathHelper.clamp(++process, 0, PROCESSING_TIME);
+                if (process == PROCESSING_TIME) {
+                    dirty = compact();
+                }
             }
-            for (int i = 0, n = MathHelper.clamp(stack.getCount(), 0, 1); i < n; i++) {
-                reversion.setInventorySlotContents(i, stack);
+
+            if (isActivatedOnStart != isActivated()) {
+                dirty = true;
+                world.setBlockState(getPos(), getBlockState().with(ACTIVE, isActivated()));
             }
+        }
 
-            final Set<IRecipe<?>> recipes = findRecipesForType(world, IRecipeType.CRAFTING);
-            for (IRecipe<?> recipe : recipes) {
-                if (recipe instanceof ICraftingRecipe && ((ICraftingRecipe) recipe).matches(compacting, world)) {
-                    final ICraftingRecipe craftingRecipe = (ICraftingRecipe) recipe;
+        if (dirty) {
+            markDirty();
+        }
+    }
 
-                    // Must include check to not match reversion (e.g. ingot to nugget)
-                    if (craftingRecipe.matches(compacting, world) && !craftingRecipe.matches(reversion, world)) {
-                        final ItemStack result = craftingRecipe.getCraftingResult(compacting);
-                        if (!result.isEmpty()) {
-                            return craftingRecipe;
-                        }
+    private void findRecipeForInput() {
+        final ItemStack itemStack = getInventory().getStackInSlot(currentIndex);
+        final IRecipe<?> compactingRecipe = getCompactingRecipe(world, itemStack);
+        if (itemStack.isEmpty() || compactingRecipe == null) {
+            currentIndex = currentIndex < 8 ? currentIndex + 1 : 0;
+        } else {
+            recipe = compactingRecipe;
+        }
+    }
+
+    private boolean compact() {
+        if (recipe != null) {
+            for (int i = 0; i < 9; i++) {
+                final int index = i + 9;
+                final ItemStack stackInSlot = getInventory().getStackInSlot(index);
+                if (stackInSlot.isEmpty()) {
+                    doCompact(index);
+                    return true;
+                } else if (stackInSlot.getItem() == recipe.getRecipeOutput().getItem()) {
+                    final int stackSize = stackInSlot.getMaxStackSize();
+                    if (stackInSlot.getCount() + 1 <= stackSize) {
+                        doCompact(index);
+                        return true;
                     }
                 }
             }
         }
-        return null;
+        return false;
+    }
+
+    private void doCompact(final int index) {
+        getInventory().insertItem(index, recipe.getRecipeOutput().copy(), false);
+        getInventory().decreaseStackSize(currentIndex, recipe.getIngredients().size());
+        recipe = null;
+        process = 0;
     }
 
     /* GETTERS */
@@ -147,7 +140,7 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
     }
 
     public boolean isActivated() {
-        return process > 0;
+        return recipe != null;
     }
 
     /* SETTERS */

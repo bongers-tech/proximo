@@ -21,8 +21,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -33,19 +31,15 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import tech.bongers.nativetech.common.NativeTech;
 import tech.bongers.nativetech.common.handler.NativeItemHandler;
-import tech.bongers.nativetech.common.util.Reference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class AbstractNativeTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
@@ -58,7 +52,7 @@ public abstract class AbstractNativeTileEntity extends TileEntity implements ITi
 
     @Override
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("container." + Reference.MOD_ID + "." + getItemName());
+        return new TranslationTextComponent("container." + NativeTech.MOD_ID + "." + getItemName());
     }
 
     @Override
@@ -101,15 +95,6 @@ public abstract class AbstractNativeTileEntity extends TileEntity implements ITi
 
     public NativeItemHandler getInventory() {
         return inventory;
-    }
-
-    protected Set<IRecipe<?>> findRecipesForType(final World world, final IRecipeType<?> recipeType) {
-        return world == null
-                ? Collections.emptySet()
-                : world.getRecipeManager().getRecipes()
-                .stream()
-                .filter(recipe -> recipe.getType() == recipeType)
-                .collect(Collectors.toSet());
     }
 
     protected abstract String getItemName();
