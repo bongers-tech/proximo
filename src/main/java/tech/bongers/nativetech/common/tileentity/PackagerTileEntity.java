@@ -35,7 +35,7 @@ import static tech.bongers.nativetech.common.util.RecipeUtil.getCompactingRecipe
 
 public class PackagerTileEntity extends AbstractNativeTileEntity {
 
-    public static final int PROCESSING_TIME = 34;
+    public static final int PROCESSING_TIME = 56;
 
     private IRecipe<?> recipe;
     private int currentIndex = 0;
