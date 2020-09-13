@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "nativetech:blocks/packager_top",
+    "front": "nativetech:blocks/packager_front_on",
+    "side": "nativetech:blocks/packager_side"
+  }
+}

@@ -30,7 +30,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tech.bongers.nativetech.client.screen.CompactorScreen;
+import tech.bongers.nativetech.client.screen.PackagerScreen;
 import tech.bongers.nativetech.client.screen.RedstoneFurnaceScreen;
 import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.container.NativeContainer;
@@ -62,7 +62,7 @@ public class NativeTech {
 
     private void clientSetup(final FMLClientSetupEvent event) {
         ScreenManager.registerFactory(NativeContainer.REDSTONE_FURNACE_CONTAINER.get(), RedstoneFurnaceScreen::new);
-        ScreenManager.registerFactory(NativeContainer.COMPACTOR_CONTAINER.get(), CompactorScreen::new);
+        ScreenManager.registerFactory(NativeContainer.PACKAGER_CONTAINER.get(), PackagerScreen::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {

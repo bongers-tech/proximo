@@ -24,16 +24,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import tech.bongers.nativetech.common.NativeTech;
-import tech.bongers.nativetech.common.container.CompactorContainer;
+import tech.bongers.nativetech.common.container.PackagerContainer;
 
-import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
+import static tech.bongers.nativetech.common.util.NativeProperties.PACKAGER;
 import static tech.bongers.nativetech.common.util.NativeProperties.PATH_GUI;
 
-public class CompactorScreen extends ContainerScreen<CompactorContainer> {
+public class PackagerScreen extends ContainerScreen<PackagerContainer> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(NativeTech.MOD_ID, PATH_GUI + COMPACTOR + ".png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(NativeTech.MOD_ID, PATH_GUI + PACKAGER + ".png");
 
-    public CompactorScreen(final CompactorContainer container, final PlayerInventory inv, final ITextComponent titleIn) {
+    public PackagerScreen(final PackagerContainer container, final PlayerInventory inv, final ITextComponent titleIn) {
         super(container, inv, titleIn);
     }
 

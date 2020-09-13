@@ -25,15 +25,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
-import tech.bongers.nativetech.common.container.CompactorContainer;
-import tech.bongers.nativetech.common.inventory.CompactingInventory;
+import tech.bongers.nativetech.common.container.PackagerContainer;
+import tech.bongers.nativetech.common.inventory.PackagerInventory;
 import tech.bongers.nativetech.common.item.handler.NativeItemHandler;
 
 import static tech.bongers.nativetech.common.util.NativeProperties.ACTIVE;
-import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
+import static tech.bongers.nativetech.common.util.NativeProperties.PACKAGER;
 import static tech.bongers.nativetech.common.util.RecipeUtil.getCompactingRecipe;
 
-public class CompactorTileEntity extends AbstractNativeTileEntity {
+public class PackagerTileEntity extends AbstractNativeTileEntity {
 
     public static final int PROCESSING_TIME = 34;
 
@@ -41,18 +41,18 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
     private int currentIndex = 0;
     private int process = 0;
 
-    public CompactorTileEntity() {
-        super(NativeTileEntity.COMPACTOR_TILE_ENTITY.get(), new NativeItemHandler(9, 9));
+    public PackagerTileEntity() {
+        super(NativeTileEntity.PACKAGER_TILE_ENTITY.get(), new NativeItemHandler(9, 9));
     }
 
     @Override
     protected String getItemName() {
-        return COMPACTOR;
+        return PACKAGER;
     }
 
     @Override
     public Container createMenu(final int id, final PlayerInventory playerInventory, final PlayerEntity playerEntity) {
-        return new CompactorContainer(id, playerInventory, this);
+        return new PackagerContainer(id, playerInventory, this);
     }
 
     @Override
@@ -98,8 +98,8 @@ public class CompactorTileEntity extends AbstractNativeTileEntity {
 
     private void findRecipeForInput() {
         final ItemStack itemStack = getInventory().getStackInSlot(currentIndex);
-        final CompactingInventory smallGrid = new CompactingInventory(itemStack, 2, 2);
-        final CompactingInventory largeGrid = new CompactingInventory(itemStack, 3, 3);
+        final PackagerInventory smallGrid = new PackagerInventory(itemStack, 2, 2);
+        final PackagerInventory largeGrid = new PackagerInventory(itemStack, 3, 3);
 
         IRecipe<?> compactingRecipe = getCompactingRecipe(world, itemStack, largeGrid);
         if (compactingRecipe == null) {

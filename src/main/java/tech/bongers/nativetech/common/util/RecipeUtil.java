@@ -24,7 +24,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.world.World;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
-import tech.bongers.nativetech.common.inventory.CompactingInventory;
+import tech.bongers.nativetech.common.inventory.PackagerInventory;
 import tech.bongers.nativetech.common.item.handler.NativeItemHandler;
 
 import javax.annotation.Nullable;
@@ -63,9 +63,9 @@ public final class RecipeUtil {
     }
 
     @Nullable
-    public static ICraftingRecipe getCompactingRecipe(final World world, final ItemStack stack, final CompactingInventory grid) {
+    public static ICraftingRecipe getCompactingRecipe(final World world, final ItemStack stack, final PackagerInventory grid) {
         if (world != null && stack != null) {
-            final CompactingInventory reversion = new CompactingInventory(stack, 1, 1);
+            final PackagerInventory reversion = new PackagerInventory(stack, 1, 1);
             final Set<IRecipe<?>> recipes = findRecipesForType(world, IRecipeType.CRAFTING);
             for (IRecipe<?> recipe : recipes) {
                 if (recipe instanceof ICraftingRecipe) {
@@ -81,7 +81,7 @@ public final class RecipeUtil {
         return null;
     }
 
-    private static boolean recipeMatchesInventory(final World world, final ICraftingRecipe recipe, final CompactingInventory inventory) {
+    private static boolean recipeMatchesInventory(final World world, final ICraftingRecipe recipe, final PackagerInventory inventory) {
         Objects.requireNonNull(world);
         if (recipe.matches(inventory, world)) {
             final ItemStack result = recipe.getCraftingResult(inventory);

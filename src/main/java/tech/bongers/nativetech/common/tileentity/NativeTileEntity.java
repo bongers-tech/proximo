@@ -24,7 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import tech.bongers.nativetech.common.NativeTech;
 import tech.bongers.nativetech.common.block.NativeBlocks;
 
-import static tech.bongers.nativetech.common.util.NativeProperties.COMPACTOR;
+import static tech.bongers.nativetech.common.util.NativeProperties.PACKAGER;
 import static tech.bongers.nativetech.common.util.NativeProperties.REDSTONE_FURNACE;
 
 public final class NativeTileEntity {
@@ -39,8 +39,8 @@ public final class NativeTileEntity {
             REDSTONE_FURNACE,
             () -> TileEntityType.Builder.create(RedstoneFurnaceTileEntity::new, NativeBlocks.REDSTONE_FURNACE_BLOCK.get()).build(null)
     );
-    public static final RegistryObject<TileEntityType<CompactorTileEntity>> COMPACTOR_TILE_ENTITY = TILE_ENTITIES.register(
-            COMPACTOR,
-            () -> TileEntityType.Builder.create(CompactorTileEntity::new, NativeBlocks.COMPACTOR_BLOCK.get()).build(null)
+    public static final RegistryObject<TileEntityType<PackagerTileEntity>> PACKAGER_TILE_ENTITY = TILE_ENTITIES.register(
+            PACKAGER,
+            () -> TileEntityType.Builder.create(PackagerTileEntity::new, NativeBlocks.PACKAGER_BLOCK.get()).build(null)
     );
 }

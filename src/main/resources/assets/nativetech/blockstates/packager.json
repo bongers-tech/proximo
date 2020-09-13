@@ -1,33 +1,33 @@
 {
   "variants": {
     "facing=north,active=false": {
-      "model": "nativetech:block/compactor"
+      "model": "nativetech:block/packager"
     },
     "facing=north,active=true": {
-      "model": "nativetech:block/compactor_on"
+      "model": "nativetech:block/packager_on"
     },
     "facing=east,active=false": {
-      "model": "nativetech:block/compactor",
+      "model": "nativetech:block/packager",
       "y": 90
     },
     "facing=east,active=true": {
-      "model": "nativetech:block/compactor_on",
+      "model": "nativetech:block/packager_on",
       "y": 90
     },
     "facing=south,active=false": {
-      "model": "nativetech:block/compactor",
+      "model": "nativetech:block/packager",
       "y": 180
     },
     "facing=south,active=true": {
-      "model": "nativetech:block/compactor_on",
+      "model": "nativetech:block/packager_on",
       "y": 180
     },
     "facing=west,active=false": {
-      "model": "nativetech:block/compactor",
+      "model": "nativetech:block/packager",
       "y": 270
     },
     "facing=west,active=true": {
-      "model": "nativetech:block/compactor_on",
+      "model": "nativetech:block/packager_on",
       "y": 270
     }
   }

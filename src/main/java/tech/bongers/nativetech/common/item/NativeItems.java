@@ -49,9 +49,9 @@ public final class NativeItems {
             NativeProperties.REDSTONE_FURNACE,
             () -> new BlockItem(NativeBlocks.REDSTONE_FURNACE_BLOCK.get(), itemProperties())
     );
-    public static final RegistryObject<Item> COMPACTOR = ITEMS.register(
-            NativeProperties.COMPACTOR,
-            () -> new BlockItem(NativeBlocks.COMPACTOR_BLOCK.get(), itemProperties())
+    public static final RegistryObject<Item> PACKAGER = ITEMS.register(
+            NativeProperties.PACKAGER,
+            () -> new BlockItem(NativeBlocks.PACKAGER_BLOCK.get(), itemProperties())
     );
 
     /* ITEMS */

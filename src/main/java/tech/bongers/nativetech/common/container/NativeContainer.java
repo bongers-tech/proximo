@@ -38,9 +38,9 @@ public final class NativeContainer {
             REDSTONE_FURNACE + CONTAINER_SUFFIX,
             () -> IForgeContainerType.create(RedstoneFurnaceContainer::new)
     );
-    public static final RegistryObject<ContainerType<CompactorContainer>> COMPACTOR_CONTAINER = CONTAINERS.register(
-            COMPACTOR + CONTAINER_SUFFIX,
-            () -> IForgeContainerType.create(CompactorContainer::new)
+    public static final RegistryObject<ContainerType<PackagerContainer>> PACKAGER_CONTAINER = CONTAINERS.register(
+            PACKAGER + CONTAINER_SUFFIX,
+            () -> IForgeContainerType.create(PackagerContainer::new)
     );
 
 }

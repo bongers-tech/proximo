@@ -26,11 +26,11 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("ConstantConditions")
-public class CompactingInventory extends CraftingInventory {
+public class PackagerInventory extends CraftingInventory {
 
     private final ItemStack[] stackList;
 
-    public CompactingInventory(final ItemStack itemStack, final int width, final int height) {
+    public PackagerInventory(final ItemStack itemStack, final int width, final int height) {
         super(null, width, height);
         stackList = new ItemStack[width * height];
         Arrays.fill(stackList, ItemStack.EMPTY);

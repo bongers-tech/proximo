@@ -30,19 +30,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
-import tech.bongers.nativetech.common.tileentity.CompactorTileEntity;
 import tech.bongers.nativetech.common.tileentity.NativeTileEntity;
+import tech.bongers.nativetech.common.tileentity.PackagerTileEntity;
 import tech.bongers.nativetech.common.util.NativeProperties;
 
-public class CompactorBlock extends AbstractNativeTileBlock {
+public class PackagerBlock extends AbstractNativeTileBlock {
 
-    public CompactorBlock() {
+    public PackagerBlock() {
         super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
     }
 
     @Override
     public TileEntity createTileEntity(final BlockState state, final IBlockReader world) {
-        return NativeTileEntity.COMPACTOR_TILE_ENTITY.get().create();
+        return NativeTileEntity.PACKAGER_TILE_ENTITY.get().create();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CompactorBlock extends AbstractNativeTileBlock {
     protected ActionResultType onTileBlockActivated(final World world, final BlockPos pos, final PlayerEntity playerEntity) {
         if (!world.isRemote) {
             final TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof CompactorTileEntity) {
+            if (tileEntity instanceof PackagerTileEntity) {
                 NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
             }
         }

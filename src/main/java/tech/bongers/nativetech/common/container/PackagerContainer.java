@@ -27,25 +27,25 @@ import net.minecraftforge.items.SlotItemHandler;
 import tech.bongers.nativetech.common.block.NativeBlocks;
 import tech.bongers.nativetech.common.gui.slot.ResultSlot;
 import tech.bongers.nativetech.common.tileentity.AbstractNativeTileEntity;
-import tech.bongers.nativetech.common.tileentity.CompactorTileEntity;
+import tech.bongers.nativetech.common.tileentity.PackagerTileEntity;
 import tech.bongers.nativetech.common.util.FunctionalIntReferenceHolder;
 
 import java.util.Objects;
 
-import static tech.bongers.nativetech.common.tileentity.CompactorTileEntity.PROCESSING_TIME;
+import static tech.bongers.nativetech.common.tileentity.PackagerTileEntity.PROCESSING_TIME;
 
-public class CompactorContainer extends AbstractNativeContainer<CompactorTileEntity> {
+public class PackagerContainer extends AbstractNativeContainer<PackagerTileEntity> {
 
     private final FunctionalIntReferenceHolder process;
 
     //Client
-    public CompactorContainer(final int id, final PlayerInventory playerInventory, final PacketBuffer data) {
+    public PackagerContainer(final int id, final PlayerInventory playerInventory, final PacketBuffer data) {
         this(id, playerInventory, getTileEntityFromData(playerInventory, data));
     }
 
     //Server
-    public CompactorContainer(int id, final PlayerInventory playerInventory, final AbstractNativeTileEntity tileEntity) {
-        super(NativeContainer.COMPACTOR_CONTAINER.get(), id, playerInventory, tileEntity);
+    public PackagerContainer(int id, final PlayerInventory playerInventory, final AbstractNativeTileEntity tileEntity) {
+        super(NativeContainer.PACKAGER_CONTAINER.get(), id, playerInventory, tileEntity);
         Objects.requireNonNull(tileEntity.getWorld());
 
         this.process = new FunctionalIntReferenceHolder(getTileEntity()::getProcess, getTileEntity()::setProcess);
@@ -86,7 +86,7 @@ public class CompactorContainer extends AbstractNativeContainer<CompactorTileEnt
 
     @Override
     protected Block getTargetBlock() {
-        return NativeBlocks.COMPACTOR_BLOCK.get();
+        return NativeBlocks.PACKAGER_BLOCK.get();
     }
 
     @OnlyIn(Dist.CLIENT)
