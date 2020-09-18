@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "proximo:blocks/compressed_redstone_block"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "proximo:items/hardened_stone_sword"
+  }
+}

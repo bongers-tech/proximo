@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "proximo:hardened_stone_sword"
+  },
+  "pattern": [
+    "i",
+    "m",
+    "s"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "m": {
+      "item": "minecraft:stone"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    }
+  }
+}

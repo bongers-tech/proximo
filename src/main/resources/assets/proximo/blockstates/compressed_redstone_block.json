@@ -1,0 +1,8 @@
+{
+  "forge_marker": 1,
+  "variants": {
+    "": {
+      "model": "proximo:block/compressed_redstone_block"
+	}
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "itemGroup.proximo": "Proximo",
+
+  "block.proximo.compressed_redstone_block": "Compressed Redstone block",
+  "block.proximo.double_compressed_redstone_block": "Double compressed Redstone block",
+  "block.proximo.redstone_furnace": "Redstone Furnace",
+  "block.proximo.packager": "Packager",
+
+  "container.proximo.redstone_furnace": "Redstone Furnace",
+  "container.proximo.packager": "Packager",
+
+  "item.proximo.hardened_stone_sword": "Hardened Stone Sword"
+}

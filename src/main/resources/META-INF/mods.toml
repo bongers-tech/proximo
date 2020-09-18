@@ -1,17 +1,17 @@
 modLoader = "javafml" #mandatory
 loaderVersion="[${forge_major},)" #mandatory
-issueTrackerURL = "https://github.com/bongers-tech/native-tech/issues" #optional
+issueTrackerURL = "https://github.com/bongers-tech/proximo/issues" #optional
 authors="Jay Anthony Bongers"
-license = "GPL-3.0 License (https://github.com/bongers-tech/native-tech/blob/master/LICENSE)"
+license = "GPL-3.0 License (https://github.com/bongers-tech/proximo/blob/master/LICENSE)"
 
 [[mods]] #mandatory
-    modId="nativetech" #mandatory
+    modId="proximo" #mandatory
     version="${version}" #mandatory
-    displayName="Native Tech" #mandatory
-    description='''Adds technology that is native to Minecraft!'''
+    displayName="Proximo" #mandatory
+    description='''Adds the next step in tech progression based on redstone'''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.nativetech]] #optional
+[[dependencies.proximo]] #optional
     modId = "forge" #mandatory
     mandatory = true #mandatory
     versionRange="[${forge_major},)" #mandatory

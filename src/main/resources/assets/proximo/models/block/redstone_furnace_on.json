@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "proximo:blocks/redstone_furnace_top_on",
+    "front": "proximo:blocks/redstone_furnace_front_on",
+    "side": "proximo:blocks/redstone_furnace_side"
+  }
+}

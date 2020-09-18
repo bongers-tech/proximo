@@ -19,8 +19,8 @@ def env = System.getenv()
 if (env.BUILD_NUMBER) {
     version = version + "-" + "${env.BUILD_NUMBER}"
 }
-group = 'tech.bongers.nativetech'
-archivesBaseName = 'nativetech'
+group = 'tech.bongers.proximo'
+archivesBaseName = 'proximo'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -35,7 +35,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                nativetech {
+                proximo {
                     source sourceSets.main
                 }
             }
@@ -46,7 +46,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                nativetech {
+                proximo {
                     source sourceSets.main
                 }
             }
@@ -56,9 +56,9 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'nativetech', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'proximo', '--all', '--output', file('src/generated/resources/')
             mods {
-                nativetech {
+                proximo {
                     source sourceSets.main
                 }
             }
@@ -109,7 +109,7 @@ processResources {
 jar {
     group = project.artifactGroup
     manifest {
-        attributes(["Specification-Title": "NativeTech",
+        attributes(["Specification-Title": "Proximo",
                     "Specification-Version": forge_major, // We are version 1 of the modlauncher specification
                     "Implementation-Title": project.archivesBaseName,
                     "Implementation-Version": project.version,

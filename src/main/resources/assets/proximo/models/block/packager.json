@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "proximo:blocks/packager_top",
+    "front": "proximo:blocks/packager",
+    "side": "proximo:blocks/packager_side"
+  }
+}
