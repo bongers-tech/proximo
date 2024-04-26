@@ -1,21 +1,9 @@
-modLoader = "javafml" #mandatory
-loaderVersion="[${forge_major},)" #mandatory
-issueTrackerURL = "https://github.com/bongers-tech/proximo/issues" #optional
-authors="Jay Anthony Bongers"
-license = "GPL-3.0 License (https://github.com/bongers-tech/proximo/blob/master/LICENSE)"
-
+modLoader="javafml" #mandatory
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
 [[mods]] #mandatory
-    modId="proximo" #mandatory
-    version="${version}" #mandatory
-    displayName="Proximo" #mandatory
-    description='''Adds the next step in tech progression based on redstone'''
-
-# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.proximo]] #optional
-    modId = "forge" #mandatory
-    mandatory = true #mandatory
-    versionRange="[${forge_major},)" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
-    ordering = "BEFORE"
-    # Side this dependency is applied on - BOTH, CLIENT or SERVER
-    side = "BOTH"
+    modId="${mod_id}" #mandatory
+    version="${mod_version}" #mandatory
+    displayName="${mod_name}" #mandatory
+    authors="${mod_authors}" #optional
+    description='''${mod_description}'''
