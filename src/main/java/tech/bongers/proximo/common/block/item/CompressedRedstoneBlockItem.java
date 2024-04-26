@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2024 bongers-tech
+ *     Copyright © 2020 bongers-tech
  *     This file is part of Proximo.
  *
  *     Proximo is free software: you can redistribute it and/or modify
@@ -15,25 +15,16 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Proximo. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.proximo;
+package tech.bongers.proximo.common.block.item;
 
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import tech.bongers.proximo.common.registry.BlockItemRegistry;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import tech.bongers.proximo.common.registry.BlockRegistry;
-import tech.bongers.proximo.common.registry.ItemRegistry;
 
-@Mod(Proximo.MOD_ID)
-public class Proximo {
+public class CompressedRedstoneBlockItem extends BlockItem {
 
-    public static final String MOD_ID = "proximo";
-    
-    public Proximo() {
-        final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        ItemRegistry.ITEMS.register(eventBus);
-        BlockRegistry.BLOCKS.register(eventBus);
-        BlockItemRegistry.BLOCK_ITEMS.register(eventBus);
+    public CompressedRedstoneBlockItem() {
+        super(BlockRegistry.COMPRESSED_REDSTONE_BLOCK.get(), new Item.Properties().rarity(Rarity.UNCOMMON));
     }
 }
