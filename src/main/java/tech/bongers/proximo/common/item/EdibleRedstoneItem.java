@@ -15,23 +15,22 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Proximo. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.proximo.common.registry;
+package tech.bongers.proximo.common.item;
 
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-import tech.bongers.proximo.Proximo;
-import tech.bongers.proximo.common.item.EdibleRedstoneItem;
-import tech.bongers.proximo.common.util.ProximoProperties;
 
-public final class ItemRegistry {
+public class EdibleRedstoneItem extends Item {
 
-    private ItemRegistry() {
-        // No args
+    public EdibleRedstoneItem() {
+        super(new Item.Properties()
+                .stacksTo(16)
+                .food(new FoodProperties.Builder()
+                        .nutrition(10)
+                        .effect(() -> new MobEffectInstance(MobEffects.ABSORPTION, 200, 2), 1.0f)
+                        .alwaysEat()
+                        .build()));
     }
-
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Proximo.MOD_ID);
-
-    public static final RegistryObject<Item> EDIBLE_REDSTONE = ITEMS.register(ProximoProperties.EDIBLE_REDSTONE, EdibleRedstoneItem::new);
 }

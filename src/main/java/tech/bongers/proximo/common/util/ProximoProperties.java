@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2020 bongers-tech
+ *     Copyright © 2024 bongers-tech
  *     This file is part of Proximo.
  *
  *     Proximo is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Proximo. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.proximo.legacy.common.util;
+package tech.bongers.proximo.common.util;
 
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -31,9 +31,11 @@ public final class ProximoProperties {
     public static final String PATH_TEXTURES = "textures/";
     public static final String PATH_GUI = PATH_TEXTURES + "gui/";
 
+    /* ITEMS */
+    public static final String EDIBLE_REDSTONE = "edible_redstone";
+    
     /* BLOCKS */
     public static final String COMPRESSED_REDSTONE_BLOCK = "compressed_redstone_block";
-    public static final String DOUBLE_COMPRESSED_REDSTONE_BLOCK = "double_compressed_redstone_block";
 
     /* MACHINES */
     public static final String REDSTONE_FURNACE = "redstone_furnace";

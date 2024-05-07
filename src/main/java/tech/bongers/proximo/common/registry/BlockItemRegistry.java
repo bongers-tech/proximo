@@ -24,6 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import tech.bongers.proximo.Proximo;
 import tech.bongers.proximo.common.block.item.CompressedRedstoneBlockItem;
+import tech.bongers.proximo.common.util.ProximoProperties;
 
 public final class BlockItemRegistry {
 
@@ -33,6 +34,6 @@ public final class BlockItemRegistry {
 
     public static final DeferredRegister<Item> BLOCK_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Proximo.MOD_ID);
 
-    public static final RegistryObject<BlockItem> COMPRESSED_REDSTONE_BLOCK_ITEM = BLOCK_ITEMS.register("compressed_redstone_block", CompressedRedstoneBlockItem::new);
+    public static final RegistryObject<BlockItem> COMPRESSED_REDSTONE_BLOCK_ITEM = BLOCK_ITEMS.register(ProximoProperties.COMPRESSED_REDSTONE_BLOCK, CompressedRedstoneBlockItem::new);
     
 }

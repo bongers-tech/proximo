@@ -22,18 +22,20 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import tech.bongers.proximo.common.registry.BlockItemRegistry;
 import tech.bongers.proximo.common.registry.BlockRegistry;
+import tech.bongers.proximo.common.registry.CreativeTabRegistry;
 import tech.bongers.proximo.common.registry.ItemRegistry;
 
 @Mod(Proximo.MOD_ID)
 public class Proximo {
 
     public static final String MOD_ID = "proximo";
-    
+
     public Proximo() {
         final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ItemRegistry.ITEMS.register(eventBus);
         BlockRegistry.BLOCKS.register(eventBus);
         BlockItemRegistry.BLOCK_ITEMS.register(eventBus);
+        CreativeTabRegistry.TABS.register(eventBus);
     }
 }
