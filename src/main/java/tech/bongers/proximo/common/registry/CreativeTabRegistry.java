@@ -21,14 +21,16 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import tech.bongers.proximo.Proximo;
 
-@Mod.EventBusSubscriber(modid = Proximo.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+import static tech.bongers.proximo.common.util.ProximoProperties.PROXIMO_CREATIVE_TAB;
+
+@EventBusSubscriber(modid = Proximo.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class CreativeTabRegistry {
 
     private CreativeTabRegistry() {
@@ -37,7 +39,7 @@ public final class CreativeTabRegistry {
 
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Proximo.MOD_ID);
 
-    public static final RegistryObject<CreativeModeTab> PROXIMO_TAB = TABS.register("proximo_tab",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> PROXIMO_TAB = TABS.register(PROXIMO_CREATIVE_TAB,
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.proximo"))
                     .icon(ItemRegistry.EDIBLE_REDSTONE.get()::getDefaultInstance)

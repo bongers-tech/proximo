@@ -17,13 +17,7 @@
  */
 package tech.bongers.proximo.legacy.common.gui.slot;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import tech.bongers.proximo.legacy.common.block.ProximoBlocks;
-import tech.bongers.proximo.legacy.common.util.FuelProperties;
-
-public class RedstoneFuelSlot/* extends SlotItemHandler */{
+public class RedstoneFuelSlot/* extends SlotItemHandler */ {
 
     /*public RedstoneFuelSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);

@@ -18,7 +18,7 @@
 package tech.bongers.proximo.legacy.common.item.handler;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import tech.bongers.proximo.legacy.common.util.FuelProperties;
 
 import javax.annotation.Nonnull;

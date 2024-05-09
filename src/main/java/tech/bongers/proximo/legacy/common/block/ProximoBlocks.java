@@ -17,9 +17,9 @@
  */
 package tech.bongers.proximo.legacy.common.block;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import tech.bongers.proximo.Proximo;
 
 public final class ProximoBlocks {
@@ -28,7 +28,7 @@ public final class ProximoBlocks {
         // No-args
     }
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Proximo.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, Proximo.MOD_ID);
 
     /* BLOCKS */
     //public static final RegistryObject<Block> COMPRESSED_REDSTONE_BLOCK = BLOCKS.register(ProximoProperties.COMPRESSED_REDSTONE_BLOCK, CompressedRedstoneBlock::new);

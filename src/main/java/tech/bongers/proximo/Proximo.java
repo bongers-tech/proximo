@@ -17,9 +17,8 @@
  */
 package tech.bongers.proximo;
 
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import tech.bongers.proximo.common.registry.BlockItemRegistry;
 import tech.bongers.proximo.common.registry.BlockRegistry;
 import tech.bongers.proximo.common.registry.CreativeTabRegistry;
@@ -30,9 +29,7 @@ public class Proximo {
 
     public static final String MOD_ID = "proximo";
 
-    public Proximo() {
-        final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
+    public Proximo(final IEventBus eventBus) {
         ItemRegistry.ITEMS.register(eventBus);
         BlockRegistry.BLOCKS.register(eventBus);
         BlockItemRegistry.BLOCK_ITEMS.register(eventBus);

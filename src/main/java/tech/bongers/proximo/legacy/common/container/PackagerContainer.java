@@ -17,9 +17,6 @@
  */
 package tech.bongers.proximo.legacy.common.container;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.SlotItemHandler;
 import tech.bongers.proximo.legacy.common.block.ProximoBlocks;
 import tech.bongers.proximo.legacy.common.gui.slot.ResultSlot;
 import tech.bongers.proximo.legacy.common.tileentity.AbstractProximoTileEntity;

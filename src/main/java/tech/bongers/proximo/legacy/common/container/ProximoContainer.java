@@ -17,9 +17,10 @@
  */
 package tech.bongers.proximo.legacy.common.container;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tech.bongers.proximo.Proximo;
 
 public final class ProximoContainer {
@@ -28,7 +29,7 @@ public final class ProximoContainer {
         // No-args
     }
 
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Proximo.MOD_ID);
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, Proximo.MOD_ID);
 
     /*public static final RegistryObject<MenuType<RedstoneFurnaceContainer>> REDSTONE_FURNACE_CONTAINER = MENU_TYPES.register(
             REDSTONE_FURNACE + CONTAINER_SUFFIX,

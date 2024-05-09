@@ -46,5 +46,6 @@ public final class ProximoProperties {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     /* MISC */
+    public static final String PROXIMO_CREATIVE_TAB = "proximo_tab";
     public static final String CONTAINER_SUFFIX = "_container";
 }

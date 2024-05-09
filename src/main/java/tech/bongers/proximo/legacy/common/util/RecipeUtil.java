@@ -17,7 +17,6 @@
  */
 package tech.bongers.proximo.legacy.common.util;
 
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 import tech.bongers.proximo.legacy.common.inventory.PackagerInventory;
 import tech.bongers.proximo.legacy.common.item.handler.ProximoItemHandler;
 

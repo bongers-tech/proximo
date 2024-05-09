@@ -30,7 +30,7 @@ public class EdibleRedstoneItem extends Item {
                 .food(new FoodProperties.Builder()
                         .nutrition(10)
                         .effect(() -> new MobEffectInstance(MobEffects.ABSORPTION, 200, 2), 1.0f)
-                        .alwaysEat()
+                        .alwaysEdible()
                         .build()));
     }
 }
