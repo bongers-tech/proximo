@@ -8,5 +8,6 @@
   "container.proximo.redstone_furnace": "Redstone Furnace",
   "container.proximo.packager": "Packager",
 
-  "item.proximo.edible_redstone": "Edible Redstone"
+  "item.proximo.edible_redstone": "Edible Redstone",
+  "item.proximo.energized_redstone": "Energized Redstone"
 }

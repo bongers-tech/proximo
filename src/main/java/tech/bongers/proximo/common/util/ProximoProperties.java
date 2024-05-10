@@ -33,6 +33,7 @@ public final class ProximoProperties {
 
     /* ITEMS */
     public static final String EDIBLE_REDSTONE = "edible_redstone";
+    public static final String ENERGIZED_REDSTONE = "energized_redstone";
     
     /* BLOCKS */
     public static final String COMPRESSED_REDSTONE_BLOCK = "compressed_redstone_block";

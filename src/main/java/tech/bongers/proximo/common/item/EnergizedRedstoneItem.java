@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2020 bongers-tech
+ *     Copyright © 2024 bongers-tech
  *     This file is part of Proximo.
  *
  *     Proximo is free software: you can redistribute it and/or modify
@@ -15,16 +15,13 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Proximo. If not, see <http://www.gnu.org/licenses/>.
  */
-package tech.bongers.proximo.legacy.common.block;
+package tech.bongers.proximo.common.item;
 
-public class DoubleCompressedRedstoneBlock /*extends RedstoneBlock*/ {
+import net.minecraft.world.item.Item;
 
-    /*public DoubleCompressedRedstoneBlock() {
-        super(AbstractBlock.Properties
-                .create(Material.IRON, MaterialColor.TNT)
-                .setRequiresTool()
-                .hardnessAndResistance(40, 12.0F)
-                .sound(SoundType.METAL)
-        );
-    }*/
+public class EnergizedRedstoneItem extends Item {
+
+    public EnergizedRedstoneItem() {
+        super(new Properties().stacksTo(64));
+    }
 }

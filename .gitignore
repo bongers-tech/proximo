@@ -4,6 +4,7 @@
 build
 run
 /src/generated/
+runs
 
 # Compiled class file
 *.class
