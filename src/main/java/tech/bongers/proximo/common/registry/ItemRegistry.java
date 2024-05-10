@@ -21,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import tech.bongers.proximo.Proximo;
 import tech.bongers.proximo.common.item.EdibleRedstoneItem;
+import tech.bongers.proximo.common.item.EnergizedRedstoneItem;
 import tech.bongers.proximo.common.util.ProximoProperties;
 
 import java.util.function.Supplier;
@@ -34,4 +35,6 @@ public final class ItemRegistry {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Proximo.MOD_ID);
 
     public static final Supplier<Item> EDIBLE_REDSTONE = ITEMS.register(ProximoProperties.EDIBLE_REDSTONE, EdibleRedstoneItem::new);
+    public static final Supplier<Item> ENERGIZED_REDSTONE = ITEMS.register(ProximoProperties.ENERGIZED_REDSTONE, EnergizedRedstoneItem::new);
+    
 }
